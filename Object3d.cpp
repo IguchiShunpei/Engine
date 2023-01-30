@@ -134,7 +134,7 @@ void Object3d::InitializeCamera(int window_width, int window_height)
 	//	0, 1);
 	// 透視投影による射影行列の生成
 	matProjection = XMMatrixPerspectiveFovLH(
-		XMConvertToRadians(60.0f),
+		XMConvertToRadians(45.0f),
 		(float)window_width / window_height,
 		0.1f, 1000.0f
 	);

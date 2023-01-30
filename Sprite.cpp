@@ -14,19 +14,25 @@ struct Vertex
 	XMFLOAT2 uv;  //uv座標
 };
 
-//頂点データ
-Vertex vertices[] = {
-	{{  0.0f,100.0f,0.0f},{0.0f,1.0f,}},//左下  インデックス0
-	{{  0.0f,  0.0f,0.0f},{0.0f,0.0f,}},//左上  インデックス1
-	{{100.0f,100.0f,0.0f},{1.0f,1.0f,}},//右下  インデックス2
-	{{100.0f,0.0f,0.0f},{1.0f,0.0f,}},//右上  インデックス3
-};
-
 //デフォルトテクスチャ格納ディレクトリ
 std::string Sprite::kDefaultTextureDirectoryPath = "Resources/";
 
-void Sprite::Initialize(DirectXCommon*dxCommon_ ,int window_width, int window_height)
+//静的メンバ変数
+XMMATRIX Sprite::matView{};
+XMMATRIX Sprite::matProjection{};
+
+
+void Sprite::Initialize(DirectXCommon* dxCommon_, int window_width, int window_height)
 {
+	//頂点データ
+	Vertex vertices[] = {
+		{{  0.0f,100.0f,0.0f},{0.0f,1.0f,}},//左下  インデックス0
+		{{  0.0f,  0.0f,0.0f},{0.0f,0.0f,}},//左上  インデックス1
+		{{100.0f,100.0f,0.0f},{1.0f,1.0f,}},//右下  インデックス2
+		{{100.0f,0.0f,0.0f},{1.0f,0.0f,}},//右上  インデックス3
+	};
+
+
 	//頂点データの全体のサイズ = 頂点データ一つ分のサイズ * 頂点データの要素数
 	UINT sizeVB = static_cast<UINT>(sizeof(vertices[0]) * _countof(vertices));
 
@@ -152,11 +158,11 @@ void Sprite::Initialize(DirectXCommon*dxCommon_ ,int window_width, int window_he
 
 	//定数バッファのマッピング
 	ConstBufferDataMaterial* constMapMaterial = nullptr;
-	result = constBuffMaterial_->Map(0, nullptr, (void**)&constMapMaterial);//マッピング
+	//result = constBuffMaterial_->Map(0, nullptr, (void**)&constMapMaterial);//マッピング
 	assert(SUCCEEDED(result));
 
 	//値を書き込むと自動的に転送される
-	constMapMaterial->color = XMFLOAT4(1, 0, 0, 0.5f);  //RGBAで半透明の赤
+	//constMapMaterial->color = XMFLOAT4(1, 0, 0, 0.5f);  //RGBAで半透明の赤
 
 	////3D変換行列////
 	ConstBufferDataTransform* constMapTransform = nullptr; //定数バッファのマッピング用ポインタ
@@ -190,19 +196,13 @@ void Sprite::Initialize(DirectXCommon*dxCommon_ ,int window_width, int window_he
 		assert(SUCCEEDED(result));
 
 		//単位行列を代入
-		constMapTransform->mat = XMMatrixIdentity();
-
-		//中心座標を変換
-		constMapTransform->mat.r[0].m128_f32[0] = 2.0f / window_width;
-		constMapTransform->mat.r[1].m128_f32[1] = -2.0f / window_height;
-
-		//中心座標を左上にずらす
-		constMapTransform->mat.r[3].m128_f32[0] = -1.0f;
-		constMapTransform->mat.r[3].m128_f32[1] = 1.0f;
-
+		matProjection = XMMatrixOrthographicOffCenterLH(
+			0.0f, (float)window_width,
+			(float)window_height, 0.0f
+			, 0.0f, 1.0f);
 	}
 
-		//デスクリプタレンジの設定
+	//デスクリプタレンジの設定
 	D3D12_DESCRIPTOR_RANGE descriptorRange{};
 	descriptorRange.NumDescriptors = 1;               //一度の描画に使うテクスチャが1枚なので1
 	descriptorRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
@@ -358,8 +358,8 @@ void Sprite::Initialize(DirectXCommon*dxCommon_ ,int window_width, int window_he
 
 	//ルートシグネチャの設定
 	D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{ };
-	rootSignatureDesc.Flags = 
-	D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+	rootSignatureDesc.Flags =
+		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 	rootSignatureDesc.pParameters = rootParams;//ルートパラメータの先頭アドレス
 	rootSignatureDesc.NumParameters = _countof(rootParams); //ルートパラメータ数
 	rootSignatureDesc.pStaticSamplers = &samplerDesc;
@@ -384,8 +384,28 @@ void Sprite::Initialize(DirectXCommon*dxCommon_ ,int window_width, int window_he
 
 void Sprite::Update()
 {
-	//XMMATRIX matTrans; //平行移動行列
-	//matTrans = XMMatrixTranslation(position_.x, position_.y, 0.0f);//平行移動
+	HRESULT result;
+	XMMATRIX matScale, matRot, matTrans;
+
+	// スケール、回転、平行移動行列の計算
+	matScale = XMMatrixScaling(scale_.x, scale_.y, scale_.z);
+	matRot = XMMatrixIdentity();
+	matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation_.z));
+	//matRot *= XMMatrixRotationX(XMConvertToRadians(rotation_.x));
+	//matRot *= XMMatrixRotationY(XMConvertToRadians(rotation_.y));
+	matTrans = XMMatrixTranslation(position_.x, position_.y, position_.z);
+
+	// ワールド行列の合成
+	matWorld = XMMatrixIdentity(); // 変形をリセット
+	matWorld *= matScale; // ワールド行列にスケーリングを反映
+	matWorld *= matRot; // ワールド行列に回転を反映
+	matWorld *= matTrans; // ワールド行列に平行移動を反映
+
+	//転送
+	ConstBufferDataB0* constMap0 = nullptr;
+	result = constBuffTransform_->Map(0, nullptr, (void**)&constMap0);
+	constMap0->mat = matWorld* matProjection;
+	constBuffTransform_->Unmap(0, nullptr);
 }
 
 void Sprite::LoadTexture(uint32_t index, const wchar_t* fileName, DirectXCommon* dxCommon_)
