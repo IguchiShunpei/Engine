@@ -16,28 +16,52 @@
     <Filter Include="シェーダーファイル">
       <UniqueIdentifier>{0ec641aa-dd1b-4500-8535-382c3827c462}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\base">
+      <UniqueIdentifier>{9690fc91-4b2e-47ad-8211-1d5a2d61c694}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\input">
+      <UniqueIdentifier>{2c238e8c-f9de-4c49-b455-b97c7d5f8ae9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\3D">
+      <UniqueIdentifier>{e37e8a73-367e-4f73-9e6c-6881aa709caf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Sprite">
+      <UniqueIdentifier>{21c2a84e-1757-4937-a08c-95e92e4837f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\base">
+      <UniqueIdentifier>{214b6ee3-9ac0-4d0a-a5d7-96be9b45e7e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\input">
+      <UniqueIdentifier>{1bbd00af-ce02-4c77-96d0-5257ddca6b9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\3D">
+      <UniqueIdentifier>{6ee4b08d-ed3f-463b-8e5c-e13708abdff9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Sprite">
+      <UniqueIdentifier>{96d7a2c8-8c2d-4987-a373-05cbff478922}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Input.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="DirectXCommon.cpp">
+      <Filter>ソース ファイル\base</Filter>
     </ClCompile>
     <ClCompile Include="WinApp.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\base</Filter>
     </ClCompile>
-    <ClCompile Include="DirectXCommon.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Sprite.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Object3d.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Input.cpp">
+      <Filter>ソース ファイル\input</Filter>
     </ClCompile>
     <ClCompile Include="Model.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Object3d.cpp">
+      <Filter>ソース ファイル\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>ソース ファイル\Sprite</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -72,23 +96,23 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Input.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="DirectXCommon.h">
+      <Filter>ヘッダー ファイル\base</Filter>
     </ClInclude>
     <ClInclude Include="WinApp.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\base</Filter>
     </ClInclude>
-    <ClInclude Include="DirectXCommon.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Sprite.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Input.h">
+      <Filter>ヘッダー ファイル\input</Filter>
     </ClInclude>
     <ClInclude Include="Object3d.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\3D</Filter>
     </ClInclude>
     <ClInclude Include="Model.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>ヘッダー ファイル\Sprite</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
