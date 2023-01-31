@@ -77,28 +77,27 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//1
 	sprite_1->Initialize(dxCommon, WinApp::window_width, WinApp::window_height);
 	sprite_1->LoadTexture(1, L"Resources/texture.jpg",dxCommon);
-	sprite_1->SetPosition({ 500,500,0 });
+	sprite_1->SetPosition({ 0,0,0 });
 	//2
 	sprite_2->Initialize(dxCommon, WinApp::window_width, WinApp::window_height);
-	sprite_2->LoadTexture(1, L"Resources/texture.jpg", dxCommon);
-	sprite_2->SetPosition({ 0,0,0 });
+	sprite_2->LoadTexture(1, L"Resources/reimu.png", dxCommon);
+	sprite_2->SetPosition({ 100,100,0 });
 
 	//3Dオブジェクト静的初期化
 	Object3d::StaticInitialize(dxCommon->GetDevice(), WinApp::window_width, WinApp::window_height);
 	//OBJからモデルデータを読み込む
 	Model* model_1 = Model:: LoadFromOBJ("triangle_mat");
-	Model* model_2 = Model::LoadFromOBJ("triangle_mat");
+	Model* model_2 = Model::LoadFromOBJ("player");
 	//3Dオブジェクト生成
 	Object3d* object3d_1 = Object3d::Create();
 	Object3d* object3d_2 = Object3d::Create();
-	Object3d* object3d_3 = Object3d::Create();
 	//オブジェクトにモデルを紐付ける
 	object3d_1->SetModel(model_1);
 	object3d_2->SetModel(model_2);
-	object3d_3->SetModel(model_2);
 	//オブジェクトの位置を指定
 	object3d_2->SetPosition({ -20,0,-5 });
-	object3d_3->SetPosition({ +5,0,+5 });
+	//スケールを指定
+	object3d_2->SetScale({ 10,10,10 });
 #pragma endregion 基盤システムの初期化
 
 		//ゲームループ
@@ -116,6 +115,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		//入力の更新
 		input->Update();
 
+		// オブジェクト移動
+		if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
+		{
+			// 現在の座標を取得
+			XMFLOAT3 position = object3d_1->GetPosition();
+
+			// 移動後の座標を計算
+			if (input->PushKey(DIK_UP)) { position.y += 1.0f; }
+			else if (input->PushKey(DIK_DOWN)) { position.y -= 1.0f; }
+			if (input->PushKey(DIK_RIGHT)) { position.x += 1.0f; }
+			else if (input->PushKey(DIK_LEFT)) { position.x -= 1.0f; }
+
+			// 座標の変更を反映
+			object3d_1->SetPosition(position);
+		}
+
 		//スプライト更新
 		sprite_1->Update();
 		sprite_2->Update();
@@ -123,7 +138,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		//3dオブジェクト更新
 		object3d_1->Update();
 		object3d_2->Update();
-		object3d_3->Update();
 
 #pragma endregion 基盤システムの更新
 		
@@ -136,7 +150,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		object3d_1->Draw();
 		object3d_2->Draw();
-		object3d_3->Draw();
 
 		//3Dオブジェクト描画前処理
 		Object3d::PostDraw();
@@ -165,7 +178,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//3Dオブジェクト解放
 	delete object3d_1;
 	delete object3d_2;
-	delete object3d_3;
 
 	//WindowsAPIの終了処理
 	winApp->Finalize();
