@@ -36,7 +36,6 @@ private: // 定数
 	static const int vertexCount = planeCount * 3;		// 頂点数
 
 public: // 静的メンバ関数
-
 	/// 静的初期化
 	static void StaticInitialize(ID3D12Device* device, int window_width, int window_height);
 
@@ -97,6 +96,7 @@ private:// 静的メンバ関数
 
 public: // メンバ関数
 	bool Initialize();
+
 	/// 毎フレーム処理
 	void Update();
 
@@ -108,6 +108,8 @@ public: // メンバ関数
 
 	/// 座標の設定
 	void SetPosition(const XMFLOAT3& position) { this->position = position; }
+
+	void SetScale(const XMFLOAT3& scale) { this->scale = scale; }
 
 	//モデルsetter
 	void SetModel(Model* model) { this->model = model; }

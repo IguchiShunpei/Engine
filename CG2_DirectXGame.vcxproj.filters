@@ -16,6 +16,7 @@
     <Filter Include="シェーダーファイル">
       <UniqueIdentifier>{0ec641aa-dd1b-4500-8535-382c3827c462}</UniqueIdentifier>
     </Filter>
+
     <Filter Include="ソース ファイル\Base">
       <UniqueIdentifier>{5e911e8c-7213-4c52-87e5-24bea188b9b4}</UniqueIdentifier>
     </Filter>
@@ -39,12 +40,14 @@
     </Filter>
     <Filter Include="ヘッダー ファイル\2D">
       <UniqueIdentifier>{9c2f2008-a231-44ff-a57e-5ddc40d91fcd}</UniqueIdentifier>
+
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+
     <ClCompile Include="WinApp.cpp">
       <Filter>ソース ファイル\Base</Filter>
     </ClCompile>
@@ -54,6 +57,7 @@
     <ClCompile Include="Input.cpp">
       <Filter>ソース ファイル\Input</Filter>
     </ClCompile>
+
     <ClCompile Include="Model.cpp">
       <Filter>ソース ファイル\3D</Filter>
     </ClCompile>
@@ -61,7 +65,9 @@
       <Filter>ソース ファイル\3D</Filter>
     </ClCompile>
     <ClCompile Include="Sprite.cpp">
+
       <Filter>ソース ファイル\2D</Filter>
+
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -107,12 +113,15 @@
     </ClInclude>
     <ClInclude Include="Model.h">
       <Filter>ヘッダー ファイル\3D</Filter>
+
     </ClInclude>
     <ClInclude Include="Object3d.h">
       <Filter>ヘッダー ファイル\3D</Filter>
     </ClInclude>
+
     <ClInclude Include="Sprite.h">
       <Filter>ヘッダー ファイル\2D</Filter>
+
     </ClInclude>
   </ItemGroup>
 </Project>

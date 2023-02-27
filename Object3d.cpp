@@ -134,7 +134,7 @@ void Object3d::InitializeCamera(int window_width, int window_height)
 	//	0, 1);
 	// 透視投影による射影行列の生成
 	matProjection = XMMatrixPerspectiveFovLH(
-		XMConvertToRadians(60.0f),
+		XMConvertToRadians(45.0f),
 		(float)window_width / window_height,
 		0.1f, 1000.0f
 	);
@@ -287,127 +287,7 @@ void Object3d::InitializeGraphicsPipeline()
 
 }
 
-
-
 HRESULT result = S_FALSE;
-
-//// 頂点座標の計算（重複あり）
-//{
-//	realVertices.resize((division + 1) * 2);
-//	int index = 0;
-//	float zValue;
-
-//	// 底面
-//	zValue = prizmHeight / 2.0f;
-//	for (int i = 0; i < division; i++)
-//	{
-//		XMFLOAT3 vertex;
-//		vertex.x = radius * sinf(XM_2PI / division * i);
-//		vertex.y = radius * cosf(XM_2PI / division * i);
-//		vertex.z = zValue;
-//		realVertices[index++].pos = vertex;
-//	}
-//	realVertices[index++].pos = XMFLOAT3(0, 0, zValue);	// 底面の中心点
-//	// 天面
-//	zValue = -prizmHeight / 2.0f;
-//	for (int i = 0; i < division; i++)
-//	{
-//		XMFLOAT3 vertex;
-//		vertex.x = radius * sinf(XM_2PI / division * i);
-//		vertex.y = radius * cosf(XM_2PI / division * i);
-//		vertex.z = zValue;
-//		realVertices[index++].pos = vertex;
-//	}
-//	realVertices[index++].pos = XMFLOAT3(0, 0, zValue);	// 天面の中心点
-//}
-
-//// 頂点座標の計算（重複なし）
-//{
-//	int index = 0;
-//	// 底面
-//	for (int i = 0; i < division; i++)
-//	{
-//		unsigned short index0 = i + 1;
-//		unsigned short index1 = i;
-//		unsigned short index2 = division;
-
-//		vertices[index++] = realVertices[index0];
-//		vertices[index++] = realVertices[index1];
-//		vertices[index++] = realVertices[index2]; // 底面の中心点
-//	}
-//	// 底面の最後の三角形の1番目のインデックスを0に書き換え
-//	vertices[index - 3] = realVertices[0];
-
-//	int topStart = division + 1;
-//	// 天面
-//	for (int i = 0; i < division; i++)
-//	{
-//		unsigned short index0 = topStart + i;
-//		unsigned short index1 = topStart + i + 1;
-//		unsigned short index2 = topStart + division;
-
-//		vertices[index++] = realVertices[index0];
-//		vertices[index++] = realVertices[index1];
-//		vertices[index++] = realVertices[index2]; // 天面の中心点
-//	}
-//	// 天面の最後の三角形の1番目のインデックスを0に書き換え
-//	vertices[index - 2] = realVertices[topStart];
-
-//	// 側面
-//	for (int i = 0; i < division; i++)
-//	{
-//		unsigned short index0 = i + 1;
-//		unsigned short index1 = topStart + i + 1;
-//		unsigned short index2 = i;
-//		unsigned short index3 = topStart + i;
-
-//		if (i == division - 1)
-//		{
-//			index0 = 0;
-//			index1 = topStart;
-//		}
-
-//		vertices[index++] = realVertices[index0];
-//		vertices[index++] = realVertices[index1];
-//		vertices[index++] = realVertices[index2];
-
-//		vertices[index++] = realVertices[index2];
-//		vertices[index++] = realVertices[index1];
-//		vertices[index++] = realVertices[index3];
-//	}
-//}
-
-//// 頂点インデックスの設定
-//{
-//	for (int i = 0; i < _countof(indices); i++)
-//	{
-//		indices[i] = i;
-//	}
-//}
-
-//// 法線方向の計算
-//for (int i = 0; i < _countof(indices) / 3; i++)
-//{// 三角形１つごとに計算していく
-//	// 三角形のインデックスを取得
-//	unsigned short index0 = indices[i * 3 + 0];
-//	unsigned short index1 = indices[i * 3 + 1];
-//	unsigned short index2 = indices[i * 3 + 2];
-//	// 三角形を構成する頂点座標をベクトルに代入
-//	XMVECTOR p0 = XMLoadFloat3(&vertices[index0].pos);
-//	XMVECTOR p1 = XMLoadFloat3(&vertices[index1].pos);
-//	XMVECTOR p2 = XMLoadFloat3(&vertices[index2].pos);
-//	// p0→p1ベクトル、p0→p2ベクトルを計算
-//	XMVECTOR v1 = XMVectorSubtract(p1, p0);
-//	XMVECTOR v2 = XMVectorSubtract(p2, p0);
-//	// 外積は両方から垂直なベクトル
-//	XMVECTOR normal = XMVector3Cross(v1, v2);
-//	// 正規化（長さを1にする)
-//	normal = XMVector3Normalize(normal);
-//	// 求めた法線を頂点データに代入
-//	XMStoreFloat3(&vertices[index0].normal, normal);
-//	XMStoreFloat3(&vertices[index1].normal, normal);
-//	XMStoreFloat3(&vertices[index2].normal, normal);
-//}
 
 void Object3d::UpdateViewMatrix()
 {
@@ -468,10 +348,6 @@ void Object3d::Update()
 
 	// 定数バッファへデータ転送
 	//ConstBufferData* constMap = nullptr;
-	//result = constBuff->Map(0, nullptr, (void**)&constMap);
-	//constMap->color = color;
-	//constMap->mat = matWorld * matView * matProjection;	// 行列の合成
-	//constBuff->Unmap(0, nullptr);
 	ConstBufferDataB0* constMap0 = nullptr;
 	result = constBuffB0->Map(0, nullptr, (void**)&constMap0);
 	constMap0->mat = matWorld * matView * matProjection;
