@@ -16,44 +16,48 @@
     <Filter Include="シェーダーファイル">
       <UniqueIdentifier>{0ec641aa-dd1b-4500-8535-382c3827c462}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\base">
-      <UniqueIdentifier>{9690fc91-4b2e-47ad-8211-1d5a2d61c694}</UniqueIdentifier>
+
+    <Filter Include="ソース ファイル\Base">
+      <UniqueIdentifier>{5e911e8c-7213-4c52-87e5-24bea188b9b4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\input">
-      <UniqueIdentifier>{2c238e8c-f9de-4c49-b455-b97c7d5f8ae9}</UniqueIdentifier>
+    <Filter Include="ソース ファイル\Input">
+      <UniqueIdentifier>{f54776c0-ed9f-489c-b2ad-d4648ffa8745}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\2D">
+      <UniqueIdentifier>{9e2fb565-894d-49c6-bdf5-8ebc5c8aaf95}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース ファイル\3D">
-      <UniqueIdentifier>{e37e8a73-367e-4f73-9e6c-6881aa709caf}</UniqueIdentifier>
+      <UniqueIdentifier>{d8d3ac09-c8d4-4e27-a92c-c5d8d5c32b42}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Sprite">
-      <UniqueIdentifier>{21c2a84e-1757-4937-a08c-95e92e4837f1}</UniqueIdentifier>
+    <Filter Include="ヘッダー ファイル\Base">
+      <UniqueIdentifier>{de54f2cb-f50a-4188-9b46-7ddd491f90c1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\base">
-      <UniqueIdentifier>{214b6ee3-9ac0-4d0a-a5d7-96be9b45e7e4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\input">
-      <UniqueIdentifier>{1bbd00af-ce02-4c77-96d0-5257ddca6b9d}</UniqueIdentifier>
+    <Filter Include="ヘッダー ファイル\Input">
+      <UniqueIdentifier>{a4b90e5c-8d11-43e9-85eb-eb5df5dd81dc}</UniqueIdentifier>
     </Filter>
     <Filter Include="ヘッダー ファイル\3D">
-      <UniqueIdentifier>{6ee4b08d-ed3f-463b-8e5c-e13708abdff9}</UniqueIdentifier>
+      <UniqueIdentifier>{2962b242-3580-4eff-99f9-cef40f360e29}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\Sprite">
-      <UniqueIdentifier>{96d7a2c8-8c2d-4987-a373-05cbff478922}</UniqueIdentifier>
+    <Filter Include="ヘッダー ファイル\2D">
+      <UniqueIdentifier>{9c2f2008-a231-44ff-a57e-5ddc40d91fcd}</UniqueIdentifier>
+
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="DirectXCommon.cpp">
-      <Filter>ソース ファイル\base</Filter>
-    </ClCompile>
+
     <ClCompile Include="WinApp.cpp">
-      <Filter>ソース ファイル\base</Filter>
+      <Filter>ソース ファイル\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectXCommon.cpp">
+      <Filter>ソース ファイル\Base</Filter>
     </ClCompile>
     <ClCompile Include="Input.cpp">
-      <Filter>ソース ファイル\input</Filter>
+      <Filter>ソース ファイル\Input</Filter>
     </ClCompile>
+
     <ClCompile Include="Model.cpp">
       <Filter>ソース ファイル\3D</Filter>
     </ClCompile>
@@ -61,7 +65,9 @@
       <Filter>ソース ファイル\3D</Filter>
     </ClCompile>
     <ClCompile Include="Sprite.cpp">
-      <Filter>ソース ファイル\Sprite</Filter>
+
+      <Filter>ソース ファイル\2D</Filter>
+
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -97,22 +103,25 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DirectXCommon.h">
-      <Filter>ヘッダー ファイル\base</Filter>
+      <Filter>ヘッダー ファイル\Base</Filter>
     </ClInclude>
     <ClInclude Include="WinApp.h">
-      <Filter>ヘッダー ファイル\base</Filter>
+      <Filter>ヘッダー ファイル\Base</Filter>
     </ClInclude>
     <ClInclude Include="Input.h">
-      <Filter>ヘッダー ファイル\input</Filter>
+      <Filter>ヘッダー ファイル\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>ヘッダー ファイル\3D</Filter>
+
     </ClInclude>
     <ClInclude Include="Object3d.h">
       <Filter>ヘッダー ファイル\3D</Filter>
     </ClInclude>
-    <ClInclude Include="Model.h">
-      <Filter>ヘッダー ファイル\3D</Filter>
-    </ClInclude>
+
     <ClInclude Include="Sprite.h">
-      <Filter>ヘッダー ファイル\Sprite</Filter>
+      <Filter>ヘッダー ファイル\2D</Filter>
+
     </ClInclude>
   </ItemGroup>
 </Project>
