@@ -70,6 +70,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	input = new Input();
 	input->Initialize(winApp);
 
+	//カメラ
+	ViewProjection* viewProjection = nullptr;
+	//カメラ初期化
+	viewProjection = new ViewProjection();
+	// ビュープロジェクションの初期化
+	ViewProjection::StaticInitialize(dxCommon->GetDevice());
+	viewProjection->Initialize();
 	//スプライトのポインタ
 	Sprite* sprite_1 = new Sprite;
 	Sprite* sprite_2 = new Sprite;
@@ -95,9 +102,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	object3d_1->SetModel(model_1);
 	object3d_2->SetModel(model_2);
 	//オブジェクトの位置を指定
-	object3d_2->SetPosition({ -20,0,-5 });
+	object3d_2->SetPosition({ -5,0,0 });
 	//スケールを指定
-	object3d_2->SetScale({ 10,10,10 });
+	object3d_2->SetScale({ 1,1,1 });
 #pragma endregion 基盤システムの初期化
 
 		//ゲームループ
@@ -119,17 +126,35 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
 		{
 			// 現在の座標を取得
-			XMFLOAT3 position = object3d_1->GetPosition();
+			Vector3 objPos = object3d_1->GetPosition();
 
 			// 移動後の座標を計算
-			if (input->PushKey(DIK_UP)) { position.y += 1.0f; }
-			else if (input->PushKey(DIK_DOWN)) { position.y -= 1.0f; }
-			if (input->PushKey(DIK_RIGHT)) { position.x += 1.0f; }
-			else if (input->PushKey(DIK_LEFT)) { position.x -= 1.0f; }
+			if (input->PushKey(DIK_UP)) { objPos.y += 0.1f; }
+			else if (input->PushKey(DIK_DOWN)) { objPos.y -= 0.1f; }
+			if (input->PushKey(DIK_RIGHT)) { objPos.x += 0.1f; }
+			else if (input->PushKey(DIK_LEFT)) { objPos.x -= 0.1f; }
 
 			// 座標の変更を反映
-			object3d_1->SetPosition(position);
+			object3d_1->SetPosition(objPos);
 		}
+
+		if (input->PushKey(DIK_W) || input->PushKey(DIK_A) || input->PushKey(DIK_S) || input->PushKey(DIK_D))
+		{
+			// 現在の座標を取得
+			Vector3 cameraPos = viewProjection->GetEye();
+
+			// 移動後の座標を計算
+			if (input->PushKey(DIK_W)) { cameraPos.y += 0.1f; }
+			else if (input->PushKey(DIK_S)) { cameraPos.y -= 0.1f; }
+			if (input->PushKey(DIK_A)) { cameraPos.x += 0.1f; }
+			else if (input->PushKey(DIK_D)) { cameraPos.x -= 0.1f; }
+
+			// 座標の変更を反映
+			viewProjection->SetEye(cameraPos);
+		}
+
+		//カメラ
+		viewProjection->UpdateMatrix();
 
 		//スプライト更新
 		sprite_1->Update();
@@ -148,8 +173,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		//3Dオブジェクト描画前処理
 		Object3d::PreDraw(dxCommon->GetCommandList());
 
-		object3d_1->Draw();
-		object3d_2->Draw();
+		object3d_1->Draw(viewProjection);
+		object3d_2->Draw(viewProjection);
 
 		//3Dオブジェクト描画前処理
 		Object3d::PostDraw();

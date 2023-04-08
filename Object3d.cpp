@@ -1,31 +1,23 @@
 ﻿#include "Object3d.h"
 #include <d3dcompiler.h>
+#include <DirectXTex.h>
+#include <fstream>
+#include <sstream>
+#include <vector>
 
 #pragma comment(lib, "d3dcompiler.lib")
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
-
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <vector>
 using namespace std;
 
 /// <summary>
 /// 静的メンバ変数の実体
 /// </summary>
-const float Object3d::radius = 5.0f;				// 底面の半径
-const float Object3d::prizmHeight = 8.0f;			// 柱の高さ
 ID3D12Device* Object3d::device = nullptr;
 ID3D12GraphicsCommandList* Object3d::cmdList = nullptr;
 ComPtr<ID3D12RootSignature> Object3d::rootsignature;
 ComPtr<ID3D12PipelineState> Object3d::pipelinestate;
-XMMATRIX Object3d::matView{};
-XMMATRIX Object3d::matProjection{};
-XMFLOAT3 Object3d::eye = { 0, 0, -50.0f };
-XMFLOAT3 Object3d::target = { 0, 0, 0 };
-XMFLOAT3 Object3d::up = { 0, 1, 0 };
 
 void Object3d::StaticInitialize(ID3D12Device* device, int window_width, int window_height)
 {
@@ -34,14 +26,14 @@ void Object3d::StaticInitialize(ID3D12Device* device, int window_width, int wind
 
 	Object3d::device = device;
 
+	// モデルにデバイスをセット
 	Model::SetDevice(device);
 
-	// カメラ初期化
-	InitializeCamera(window_width, window_height);
+	// ワールドトランスフォームにデバイスを貸す
+	WorldTransform::StaticInitialize(device);
 
 	// パイプライン初期化
 	InitializeGraphicsPipeline();
-
 }
 
 void Object3d::PreDraw(ID3D12GraphicsCommandList* cmdList)
@@ -81,63 +73,8 @@ Object3d* Object3d::Create()
 		return nullptr;
 	}
 
-	// スケールをセット
-	float scale_val = 20;
-	object3d->scale = { scale_val,scale_val, scale_val };
 
 	return object3d;
-}
-
-void Object3d::SetEye(XMFLOAT3 eye)
-{
-	Object3d::eye = eye;
-
-	UpdateViewMatrix();
-}
-
-void Object3d::SetTarget(XMFLOAT3 target)
-{
-	Object3d::target = target;
-
-	UpdateViewMatrix();
-}
-
-void Object3d::CameraMoveVector(XMFLOAT3 move)
-{
-	XMFLOAT3 eye_moved = GetEye();
-	XMFLOAT3 target_moved = GetTarget();
-
-	eye_moved.x += move.x;
-	eye_moved.y += move.y;
-	eye_moved.z += move.z;
-
-	target_moved.x += move.x;
-	target_moved.y += move.y;
-	target_moved.z += move.z;
-
-	SetEye(eye_moved);
-	SetTarget(target_moved);
-}
-
-void Object3d::InitializeCamera(int window_width, int window_height)
-{
-	// ビュー行列の生成
-	matView = XMMatrixLookAtLH(
-		XMLoadFloat3(&eye),
-		XMLoadFloat3(&target),
-		XMLoadFloat3(&up));
-
-	// 平行投影による射影行列の生成
-	//constMap->mat = XMMatrixOrthographicOffCenterLH(
-	//	0, window_width,
-	//	window_height, 0,
-	//	0, 1);
-	// 透視投影による射影行列の生成
-	matProjection = XMMatrixPerspectiveFovLH(
-		XMConvertToRadians(45.0f),
-		(float)window_width / window_height,
-		0.1f, 1000.0f
-	);
 }
 
 void Object3d::InitializeGraphicsPipeline()
@@ -149,7 +86,7 @@ void Object3d::InitializeGraphicsPipeline()
 
 	// 頂点シェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/shaders/OBJVS.hlsl",	// シェーダファイル名
+		L"Resources/Shaders/OBJVS.hlsl",	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "vs_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -172,7 +109,7 @@ void Object3d::InitializeGraphicsPipeline()
 
 	// ピクセルシェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/shaders/OBJPS.hlsl",	// シェーダファイル名
+		L"Resources/Shaders/OBJPS.hlsl",	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "ps_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -260,10 +197,11 @@ void Object3d::InitializeGraphicsPipeline()
 	descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0); // t0 レジスタ
 
 	// ルートパラメータ
-	CD3DX12_ROOT_PARAMETER rootparams[3];
+	CD3DX12_ROOT_PARAMETER rootparams[4];
 	rootparams[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
 	rootparams[1].InitAsConstantBufferView(1, 0, D3D12_SHADER_VISIBILITY_ALL);
-	rootparams[2].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_ALL);
+	rootparams[2].InitAsConstantBufferView(2, 0, D3D12_SHADER_VISIBILITY_ALL);
+	rootparams[3].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_ALL);
 
 	// スタティックサンプラー
 	CD3DX12_STATIC_SAMPLER_DESC samplerDesc = CD3DX12_STATIC_SAMPLER_DESC(0);
@@ -287,86 +225,38 @@ void Object3d::InitializeGraphicsPipeline()
 
 }
 
-HRESULT result = S_FALSE;
-
-void Object3d::UpdateViewMatrix()
-{
-	// ビュー行列の更新
-	matView = XMMatrixLookAtLH(XMLoadFloat3(&eye), XMLoadFloat3(&target), XMLoadFloat3(&up));
-}
-
 bool Object3d::Initialize()
 {
-	// nullptrチェック
-	assert(device);
+	//worldTransform初期化
+	worldTransform_.Initialize();
 
-	// ヒーププロパティ
-	CD3DX12_HEAP_PROPERTIES heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
-	// リソース設定
-	CD3DX12_RESOURCE_DESC resourceDesc =
-		CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataB0) + 0xff) & ~0xff);
-
-	HRESULT result;
-
-	// 定数バッファの生成
-	result = device->CreateCommittedResource(
-		&heapProps, // アップロード可能
-		D3D12_HEAP_FLAG_NONE,
-		&resourceDesc,
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&constBuffB0));
-	assert(SUCCEEDED(result));
+	//クラス名の文字列を取得
+	name = typeid(*this).name();
 
 	return true;
 }
 
 void Object3d::Update()
 {
-	HRESULT result;
-	XMMATRIX matScale, matRot, matTrans;
-
-	// スケール、回転、平行移動行列の計算
-	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
-	matRot = XMMatrixIdentity();
-	matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
-	matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
-	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
-	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
-
-	// ワールド行列の合成
-	matWorld = XMMatrixIdentity(); // 変形をリセット
-	matWorld *= matScale; // ワールド行列にスケーリングを反映
-	matWorld *= matRot; // ワールド行列に回転を反映
-	matWorld *= matTrans; // ワールド行列に平行移動を反映
-
-	// 親オブジェクトがあれば
-	if (parent != nullptr) {
-		// 親オブジェクトのワールド行列を掛ける
-		matWorld *= parent->matWorld;
-	}
-
-	// 定数バッファへデータ転送
-	//ConstBufferData* constMap = nullptr;
-	ConstBufferDataB0* constMap0 = nullptr;
-	result = constBuffB0->Map(0, nullptr, (void**)&constMap0);
-	constMap0->mat = matWorld * matView * matProjection;
-	constBuffB0->Unmap(0, nullptr);
-
+	// ワールドトランスフォームの行列更新と転送
+	worldTransform_.UpdateMatrix();
 }
 
-void Object3d::Draw()
+void Object3d::Draw(ViewProjection* viewProjection)
 {
 	// nullptrチェック
 	assert(device);
 	assert(Object3d::cmdList);
 
-	//モデルがセットされていなければ描画をスキップ
-	if (model == nullptr)return;
+	// モデルがセットされていなければ描画をスキップ
+	if (model == nullptr) return;
 
 	// 定数バッファビューをセット
-	cmdList->SetGraphicsRootConstantBufferView(0, constBuffB0->GetGPUVirtualAddress());
+	cmdList->SetGraphicsRootConstantBufferView(0, worldTransform_.GetBuff()->GetGPUVirtualAddress());
 
-	//モデルを描画
-	model->Draw(cmdList, 1);
+	// ビュープロジェクション変換データ定数バッファビューをセット
+	cmdList->SetGraphicsRootConstantBufferView(1, viewProjection->GetBuff()->GetGPUVirtualAddress());
+
+	// モデルを描画
+	model->Draw(cmdList, 2, 1);
 }

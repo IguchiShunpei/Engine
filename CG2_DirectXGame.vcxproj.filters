@@ -46,6 +46,12 @@
     <Filter Include="ヘッダー ファイル\Math">
       <UniqueIdentifier>{7eb1c4c9-c084-4e66-8f54-c8ee6c81696a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\camera">
+      <UniqueIdentifier>{315b93d7-e65a-4f4f-b021-8f37beb4214b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\camera">
+      <UniqueIdentifier>{c33c88d6-f11e-4b88-8792-97d8c66b43d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -69,6 +75,9 @@
     <ClCompile Include="Sprite.cpp">
       <Filter>ソース ファイル\2D</Filter>
     </ClCompile>
+    <ClCompile Include="WorldTransform.cpp">
+      <Filter>ソース ファイル\3D</Filter>
+    </ClCompile>
     <ClCompile Include="Matrix4.cpp">
       <Filter>ソース ファイル\Math</Filter>
     </ClCompile>
@@ -80,6 +89,9 @@
     </ClCompile>
     <ClCompile Include="Vector4.cpp">
       <Filter>ソース ファイル\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewProjection.cpp">
+      <Filter>ソース ファイル\camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -132,6 +144,9 @@
     <ClInclude Include="Sprite.h">
       <Filter>ヘッダー ファイル\2D</Filter>
     </ClInclude>
+    <ClInclude Include="WorldTransform.h">
+      <Filter>ヘッダー ファイル\3D</Filter>
+    </ClInclude>
     <ClInclude Include="Matrix4.h">
       <Filter>ヘッダー ファイル\Math</Filter>
     </ClInclude>
@@ -143,6 +158,9 @@
     </ClInclude>
     <ClInclude Include="Vector4.h">
       <Filter>ヘッダー ファイル\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewProjection.h">
+      <Filter>ヘッダー ファイル\camera</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
