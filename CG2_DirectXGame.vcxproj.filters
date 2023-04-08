@@ -16,7 +16,6 @@
     <Filter Include="シェーダーファイル">
       <UniqueIdentifier>{0ec641aa-dd1b-4500-8535-382c3827c462}</UniqueIdentifier>
     </Filter>
-
     <Filter Include="ソース ファイル\Base">
       <UniqueIdentifier>{5e911e8c-7213-4c52-87e5-24bea188b9b4}</UniqueIdentifier>
     </Filter>
@@ -40,14 +39,18 @@
     </Filter>
     <Filter Include="ヘッダー ファイル\2D">
       <UniqueIdentifier>{9c2f2008-a231-44ff-a57e-5ddc40d91fcd}</UniqueIdentifier>
-
+    </Filter>
+    <Filter Include="ソース ファイル\Math">
+      <UniqueIdentifier>{a1d13f23-3fed-4807-b315-1ecbab2120b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Math">
+      <UniqueIdentifier>{7eb1c4c9-c084-4e66-8f54-c8ee6c81696a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-
     <ClCompile Include="WinApp.cpp">
       <Filter>ソース ファイル\Base</Filter>
     </ClCompile>
@@ -57,7 +60,6 @@
     <ClCompile Include="Input.cpp">
       <Filter>ソース ファイル\Input</Filter>
     </ClCompile>
-
     <ClCompile Include="Model.cpp">
       <Filter>ソース ファイル\3D</Filter>
     </ClCompile>
@@ -65,9 +67,19 @@
       <Filter>ソース ファイル\3D</Filter>
     </ClCompile>
     <ClCompile Include="Sprite.cpp">
-
       <Filter>ソース ファイル\2D</Filter>
-
+    </ClCompile>
+    <ClCompile Include="Matrix4.cpp">
+      <Filter>ソース ファイル\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2.cpp">
+      <Filter>ソース ファイル\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3.cpp">
+      <Filter>ソース ファイル\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector4.cpp">
+      <Filter>ソース ファイル\Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -113,15 +125,24 @@
     </ClInclude>
     <ClInclude Include="Model.h">
       <Filter>ヘッダー ファイル\3D</Filter>
-
     </ClInclude>
     <ClInclude Include="Object3d.h">
       <Filter>ヘッダー ファイル\3D</Filter>
     </ClInclude>
-
     <ClInclude Include="Sprite.h">
       <Filter>ヘッダー ファイル\2D</Filter>
-
+    </ClInclude>
+    <ClInclude Include="Matrix4.h">
+      <Filter>ヘッダー ファイル\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2.h">
+      <Filter>ヘッダー ファイル\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3.h">
+      <Filter>ヘッダー ファイル\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector4.h">
+      <Filter>ヘッダー ファイル\Math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
