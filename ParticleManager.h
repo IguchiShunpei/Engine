@@ -1,12 +1,12 @@
 #pragma once
 
+#include "Particle.h"
+#include "XMViewProjection.h"
 #include <Windows.h>
 #include <wrl.h>
 #include <d3d12.h>
 #include <DirectXMath.h>
 #include <d3dx12.h>
-#include "XMViewProjection.h"
-#include "Particle.h"
 
 /// 3Dオブジェクト
 class ParticleManager
@@ -28,13 +28,6 @@ public: // サブクラス
 		XMMATRIX mat;	// ３Ｄ変換行列
 		XMMATRIX matBillboard;	//ビルボード行列
 	};
-
-private: // 定数
-	static const int division = 50;					// 分割数
-	static const float radius;				// 底面の半径
-	static const float prizmHeight;			// 柱の高さ
-	static const int planeCount = division * 2 + division * 2;		// 面の数
-	static const int vertexCount = 1024;		// 頂点数
 public: // 静的メンバ関数
 	/// 静的初期化
 	static void StaticInitialize(ID3D12Device* device);
@@ -72,22 +65,17 @@ public: // メンバ関数
 	void Draw();
 
 	/// パーティクル発射
-	/// <param name="p">パーティクル</param>
-	/// <param name="setpos">位置</param>
-	/// <param name="setvel">移動量</param>
-	/// <param name="setacc">重力分布</param>
-	/// <param name="setnum">一気に何個か</param>
-	///  <param name="setscale">x = 開始スケール , y = 終了スケール</param>
-	void Active(Particle* p, const float& setpos, const float& setvel, const float& setacc, const int& setnum, const XMFLOAT2& setscale);
+	void Fire(Particle* particle, const float& setpos, const float& setvel, const float& setacc, const int& setnum, const XMFLOAT2& setscale);
 
 private: // メンバ変数
 	ComPtr<ID3D12Resource> constBuff; // 定数バッファ
-	// ローカルスケール
-	XMFLOAT3 scale = { 1.0f,1.0f,1.0f };
-	//パーティクル
-	Particle* particle;
+	//スケール
+	XMFLOAT3 scale = { 1,1,1 };
+
 	//DirectXMathを使ったViewProjection
 	XMViewProjection* xmViewProjection;
+	//パーティクル
+	Particle* particle;
 
 public://setter
 	//パーティクルモデル

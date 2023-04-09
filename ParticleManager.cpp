@@ -24,8 +24,6 @@ void ParticleManager::StaticInitialize(ID3D12Device* device)
 
 	// パイプライン初期化
 	InitializeGraphicsPipeline();
-
-
 }
 
 void ParticleManager::PreDraw(ID3D12GraphicsCommandList* cmdList)
@@ -282,7 +280,8 @@ void ParticleManager::Update()
 	// 定数バッファへデータ転送
 	ConstBufferData* constMap = nullptr;
 	result = constBuff->Map(0, nullptr, (void**)&constMap);
-	constMap->mat = matView;	// 行列の合成
+	//行列の合成
+	constMap->mat = matView;
 	constMap->matBillboard = matBillboard;
 	constBuff->Unmap(0, nullptr);
 }
@@ -299,7 +298,7 @@ void ParticleManager::Draw()
 	particle->Draw(cmdList);
 }
 
-void ParticleManager::Active(Particle* p, const float& setpos, const float& setvel, const float& setacc, const int& setnum, const XMFLOAT2& setscale)
+void ParticleManager::Fire(Particle* particle, const float& setpos, const float& setvel, const float& setacc, const int& setnum, const XMFLOAT2& setscale)
 {
 	for (int i = 0; i < setnum; i++)
 	{
@@ -321,6 +320,6 @@ void ParticleManager::Active(Particle* p, const float& setpos, const float& setv
 		acc.y = -(float)rand() / RAND_MAX * md_acc;
 
 		//追加
-		p->Add(60, pos, vel, acc, setscale.x, setscale.y);
+		particle->Add(60, pos, vel, acc, setscale.x, setscale.y);
 	}
 }

@@ -36,17 +36,17 @@ public://サブクラス
 		XMFLOAT3 velocity = {};
 		//加速度
 		XMFLOAT3 accel = {};
-		//現在frame
+		//現在フレーム
 		int frame = 0;
-		//終了frame
+		//終了フレーム
 		int num_frame = 0;
 
 		//スケール
 		float scale = 1.0f;
 		//初期値
-		float s_scale = 1.0f;
+		float s_Scale = 1.0f;
 		//最終値
-		float e_scale = 0.0f;
+		float e_Scale = 0.0f;
 	};
 
 private://定数
@@ -97,7 +97,7 @@ private://メンバ変数
 
 	std::forward_list<OneParticle> particles_;
 
-public://アクセッサ置き場
+public://setter
 	//デバイス
 	static void SetDevice(ID3D12Device* device) { Particle::device_ = device; }
 

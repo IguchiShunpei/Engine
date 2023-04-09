@@ -1,11 +1,11 @@
 #include "Particle.h"
 #include <DirectXTex.h>
+#include <Windows.h>
 #include <cassert>
+#include <sstream>
 #include <string>
 #include <fstream>
-#include <sstream>
 #include <vector>
-#include <Windows.h>
 
 using namespace DirectX;
 using namespace std;
@@ -202,8 +202,8 @@ void Particle::Update()
 		//進行度を0~1の範囲に換算
 		float f = (float)it->frame / it->num_frame;
 		//スケールの線形補間
-		it->scale = (it->e_scale - it->s_scale) * f;
-		it->scale += it->s_scale;
+		it->scale = (it->e_Scale - it->s_Scale) * f;
+		it->scale += it->s_Scale;
 	}
 	//頂点バッファへデータ転送
 	VertexPosScale* vertMap = nullptr;
@@ -259,9 +259,9 @@ void Particle::Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 acce
 	p.accel = accel;
 	p.num_frame = life;
 
-	p.s_scale = start_scale;
-	p.e_scale = end_scale;
-	p.scale = p.s_scale;
+	p.s_Scale = start_scale;
+	p.e_Scale = end_scale;
+	p.scale = p.s_Scale;
 }
 
 const DirectX::XMFLOAT3 operator+(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs)
