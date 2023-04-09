@@ -114,14 +114,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//パーティクル
 	Particle* particle_1 = Particle::LoadParticleTexture("effect1.png");
 	ParticleManager* pm_1 = ParticleManager::Create();
-
 	Particle* particle_2 = Particle::LoadParticleTexture("effect2.png");
 	ParticleManager* pm_2 = ParticleManager::Create();
-
+	//オブジェクトにモデルを紐付ける
 	pm_1->SetParticleModel(particle_1);
-	pm_1->SetXMViewProjection(xmViewProjection);
-
 	pm_2->SetParticleModel(particle_2);
+	//カメラをセット
+	pm_1->SetXMViewProjection(xmViewProjection);
 	pm_2->SetXMViewProjection(xmViewProjection);
 
 #pragma endregion 基盤システムの初期化
@@ -175,8 +174,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		//パーティクル発生
 		if (input->PushKey(DIK_SPACE))
 		{
-			pm_1->Active(particle_1, 30.0f, 0.2f, 0.001f, 2, { 13.0f, 0.0f });
-			pm_2->Active(particle_2, 70.0f, 0.2f, 0.001f, 5, { 6.0f,0.0f });
+			pm_1->Fire(particle_1, 30, 0.2f, 0, 2, { 8.0f, 0.0f });
+			pm_2->Fire(particle_2, 70, 0.2f, 0, 5, { 4.0f,0.0f });
 		}
 
 		//カメラ

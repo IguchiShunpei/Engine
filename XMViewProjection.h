@@ -12,9 +12,9 @@ private:
 	using XMMATRIX = DirectX::XMMATRIX;
 public:
 	XMViewProjection();
-	virtual ~XMViewProjection();
+	~XMViewProjection();
 	//更新
-	virtual void Update();
+	void Update();
 	//ビュー行列更新
 	void UpdateViewMatrix();
 	//プロジェクション行列更新
@@ -52,11 +52,9 @@ public://アクセッサ
 
 	const XMMATRIX& GetMatViewProjection() { return matViewProjection_; }
 
-
 	//ビルボード行列
 	const XMMATRIX& GetMatBillboard() { return matBillboard_; }
 	const XMMATRIX& GetMatBillboardY() { return matBillboardY_; }
-
 
 	//視点
 	const XMFLOAT3& GetEye() { return eye_; }
