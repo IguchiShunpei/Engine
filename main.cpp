@@ -5,6 +5,7 @@
 #include "Sprite.h"
 #include "Object3d.h"
 #include"Model.h"
+#include "ParticleManager.h"
 
 #include<windows.h>
 #include<cassert>
@@ -72,18 +73,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	//カメラ
 	ViewProjection* viewProjection = nullptr;
+	XMViewProjection* xmViewProjection = nullptr;
 	//カメラ初期化
 	viewProjection = new ViewProjection();
+	xmViewProjection = new XMViewProjection();
 	// ビュープロジェクションの初期化
 	ViewProjection::StaticInitialize(dxCommon->GetDevice());
 	viewProjection->Initialize();
+	ViewProjection::StaticInitialize(dxCommon->GetDevice());
 	//スプライトのポインタ
 	Sprite* sprite_1 = new Sprite;
 	Sprite* sprite_2 = new Sprite;
 	//スプライトの初期化
 	//1
 	sprite_1->Initialize(dxCommon, WinApp::window_width, WinApp::window_height);
-	sprite_1->LoadTexture(1, L"Resources/texture.jpg",dxCommon);
+	sprite_1->LoadTexture(1, L"Resources/texture.jpg", dxCommon);
 	sprite_1->SetPosition({ 0,0,0 });
 	//2
 	sprite_2->Initialize(dxCommon, WinApp::window_width, WinApp::window_height);
@@ -92,8 +96,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	//3Dオブジェクト静的初期化
 	Object3d::StaticInitialize(dxCommon->GetDevice(), WinApp::window_width, WinApp::window_height);
+	ParticleManager::StaticInitialize(dxCommon->GetDevice());
 	//OBJからモデルデータを読み込む
-	Model* model_1 = Model:: LoadFromOBJ("triangle_mat");
+	Model* model_1 = Model::LoadFromOBJ("triangle_mat");
 	Model* model_2 = Model::LoadFromOBJ("player");
 	//3Dオブジェクト生成
 	Object3d* object3d_1 = Object3d::Create();
@@ -105,9 +110,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	object3d_2->SetPosition({ -5,0,0 });
 	//スケールを指定
 	object3d_2->SetScale({ 1,1,1 });
+
+	//パーティクル
+	Particle* particle_1 = Particle::LoadParticleTexture("effect1.png");
+	ParticleManager* pm_1 = ParticleManager::Create();
+
+	Particle* particle_2 = Particle::LoadParticleTexture("effect2.png");
+	ParticleManager* pm_2 = ParticleManager::Create();
+
+	pm_1->SetParticleModel(particle_1);
+	pm_1->SetXMViewProjection(xmViewProjection);
+
+	pm_2->SetParticleModel(particle_2);
+	pm_2->SetXMViewProjection(xmViewProjection);
+
 #pragma endregion 基盤システムの初期化
 
-		//ゲームループ
+	//ゲームループ
 	while (true)
 	{
 #pragma region 基盤システムの更新
@@ -153,8 +172,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			viewProjection->SetEye(cameraPos);
 		}
 
+		//パーティクル発生
+		if (input->PushKey(DIK_SPACE))
+		{
+			pm_1->Active(particle_1, 30.0f, 0.2f, 0.001f, 2, { 13.0f, 0.0f });
+			pm_2->Active(particle_2, 70.0f, 0.2f, 0.001f, 5, { 6.0f,0.0f });
+		}
+
 		//カメラ
 		viewProjection->UpdateMatrix();
+		xmViewProjection->Update();
 
 		//スプライト更新
 		sprite_1->Update();
@@ -164,8 +191,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		object3d_1->Update();
 		object3d_2->Update();
 
+		//パーティクル
+		pm_1->Update();
+		pm_2->Update();
+
 #pragma endregion 基盤システムの更新
-		
+
 		//描画前処理
 		dxCommon->PreDraw();
 
@@ -173,11 +204,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		//3Dオブジェクト描画前処理
 		Object3d::PreDraw(dxCommon->GetCommandList());
 
+		//オブジェクト
 		object3d_1->Draw(viewProjection);
 		object3d_2->Draw(viewProjection);
 
 		//3Dオブジェクト描画前処理
 		Object3d::PostDraw();
+
+		//エフェクト描画前処理
+		ParticleManager::PreDraw(dxCommon->GetCommandList());
+
+		//パーティクル
+		pm_1->Draw();
+		pm_2->Draw();
+
+		//エフェクト描画後処理
+		ParticleManager::PostDraw();
 
 		//ここにポリゴンなどの描画処理を書く
 		sprite_1->Draw(dxCommon);
@@ -203,6 +245,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//3Dオブジェクト解放
 	delete object3d_1;
 	delete object3d_2;
+
+	//パーティクル
+	delete particle_1;
+	delete pm_1;
+	delete particle_2;
+	delete pm_2;
 
 	//WindowsAPIの終了処理
 	winApp->Finalize();
