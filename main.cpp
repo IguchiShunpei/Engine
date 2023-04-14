@@ -210,6 +210,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		//3Dオブジェクト描画前処理
 		Object3d::PostDraw();
 
+
 		//エフェクト描画前処理
 		ParticleManager::PreDraw(dxCommon->GetCommandList());
 
