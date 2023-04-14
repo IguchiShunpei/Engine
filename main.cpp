@@ -204,8 +204,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Object3d::PreDraw(dxCommon->GetCommandList());
 
 		//オブジェクト
-		object3d_1->Draw(viewProjection);
-		object3d_2->Draw(viewProjection);
+		/*object3d_1->Draw(viewProjection);
+		object3d_2->Draw(viewProjection);*/
 
 		//3Dオブジェクト描画前処理
 		Object3d::PostDraw();
@@ -214,15 +214,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		ParticleManager::PreDraw(dxCommon->GetCommandList());
 
 		//パーティクル
-		pm_1->Draw();
-		pm_2->Draw();
+	/*	pm_1->Draw();
+		pm_2->Draw();*/
 
 		//エフェクト描画後処理
 		ParticleManager::PostDraw();
 
 		//ここにポリゴンなどの描画処理を書く
-		sprite_1->Draw(dxCommon);
-		sprite_2->Draw(dxCommon);
+		/*sprite_1->Draw(dxCommon);
+		sprite_2->Draw(dxCommon);*/
 
 #pragma endregion 最初のシーンの描画
 
