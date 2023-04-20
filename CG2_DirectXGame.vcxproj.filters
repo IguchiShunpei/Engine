@@ -102,6 +102,9 @@
     <ClCompile Include="XMViewProjection.cpp">
       <Filter>ソース ファイル\camera</Filter>
     </ClCompile>
+    <ClCompile Include="FbxLoader.cpp">
+      <Filter>ソース ファイル\3D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli">
@@ -191,6 +194,9 @@
     </ClInclude>
     <ClInclude Include="XMViewProjection.h">
       <Filter>ヘッダー ファイル\camera</Filter>
+    </ClInclude>
+    <ClInclude Include="FbxLoader.h">
+      <Filter>ヘッダー ファイル\3D</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
