@@ -147,6 +147,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DirectXCommon.cpp" />
+    <ClCompile Include="FbxLoader.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix4.cpp" />
@@ -232,6 +233,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DirectXCommon.h" />
+    <ClInclude Include="FbxLoader.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Matrix4.h" />
     <ClInclude Include="Model.h" />

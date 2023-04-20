@@ -6,6 +6,7 @@
 #include "Object3d.h"
 #include"Model.h"
 #include "ParticleManager.h"
+#include "FbxLoader.h"
 
 #include<windows.h>
 #include<cassert>
@@ -65,6 +66,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	dxCommon = new DirectXCommon();
 	dxCommon->Initialize(winApp);
 
+	//FBX
+	FbxLoader::GetInstance()->Initialize(dxCommon->GetDevice());
+
 	//入力のポインタ
 	Input* input = nullptr;
 	//入力の初期化
@@ -110,6 +114,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	object3d_2->SetPosition({ -5,0,0 });
 	//スケールを指定
 	object3d_2->SetScale({ 1,1,1 });
+
+	//FBX読み込み
+	FbxLoader::GetInstance()->LoadModelFromFile("cube");
 
 	//パーティクル
 	Particle* particle_1 = Particle::LoadParticleTexture("effect1.png");
@@ -257,6 +264,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	//DirectX解放
 	delete dxCommon;
+
+	//FBX解放
+	FbxLoader::GetInstance()->Finalize();
 
 	//入力解放
 	delete input;
