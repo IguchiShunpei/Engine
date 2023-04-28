@@ -68,6 +68,8 @@ void FbxLoader::LoadModelFromFile(const string& modelName)
 	ParseNodeRecursive(fbxModel, fbxScene->GetRootNode());
 	//FBXシーン開放
 	fbxScene->Destroy();
+	//バッファ生成
+	fbxModel->CreateBuffers(device);
 }
 
 void FbxLoader::ParseNodeRecursive(FbxModel* fbxModel, FbxNode* fbxNode, Node* parent)
@@ -185,11 +187,12 @@ void FbxLoader::ParseMeshFaces(FbxModel* fbxModel, FbxMesh* fbxMesh)
 	//面ごとの情報読み取り
 	for (int i = 0; i < polygonCount; i++)
 	{
-		const int porygonSize = fbxMesh->GetPolygonSize(i);
-		assert(index <= 4);
+		//面を構成する頂点の数を取得
+		const int polygonSize = fbxMesh->GetPolygonSize(i);
+		assert(polygonSize <= 4);
 
 		//1頂点ずつ処理
-		for (int j = 0; j < porygonSize; j++)
+		for (int j = 0; j < polygonSize; j++)
 		{
 			int index = fbxMesh->GetPolygonVertex(i, j);
 			assert(index >= 0);
