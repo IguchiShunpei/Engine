@@ -48,11 +48,18 @@ public:
 	// 射影行列作成
 	Matrix4 ProjectionMat(float fovAngleY, float aspectRatio, float nearZ, float farZ);
 
+	// 度数からラジアンに変換
+	static float ConvertToRadian(float angle) { return angle * (PI / 180); }
+
+	// 度数からラジアンに変換
+	static float ConvertToDegree(float angle) { return angle * (180 / PI); }
+
 	// 代入演算子オーバーロード
 	Matrix4& operator*=(const Matrix4& m1);
 
 	Matrix4 operator*(const Matrix4& m1);
-
+private:
+	static const float PI;
 };
 
 	// 2項演算子オーバーロード

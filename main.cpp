@@ -4,6 +4,7 @@
 #include"DirectXCommon.h"
 #include "Sprite.h"
 #include "Object3d.h"
+#include "FbxObject3d.h"
 #include"Model.h"
 #include "ParticleManager.h"
 #include "FbxLoader.h"
@@ -84,7 +85,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// ビュープロジェクションの初期化
 	ViewProjection::StaticInitialize(dxCommon->GetDevice());
 	viewProjection->Initialize();
-	ViewProjection::StaticInitialize(dxCommon->GetDevice());
+	viewProjection->SetEye({ 0,50,300 });
 	//スプライトのポインタ
 	Sprite* sprite_1 = new Sprite;
 	Sprite* sprite_2 = new Sprite;
@@ -115,8 +116,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//スケールを指定
 	object3d_2->SetScale({ 1,1,1 });
 
+	//FBX
+	FbxObject3d::StaticInitialize(dxCommon->GetDevice(), WinApp::window_width, WinApp::window_height);
 	//FBX読み込み
-	FbxLoader::GetInstance()->LoadModelFromFile("cube");
+	FbxModel* fbxModel_1 = FbxLoader::GetInstance()->LoadModelFromFile("cube");
+	//3Dオブジェクト生成
+	FbxObject3d* fbxObject3d_1 = FbxObject3d::Create();
+	//オブジェクトにモデルを紐付ける
+	fbxObject3d_1->SetModel(fbxModel_1);
 
 	//パーティクル
 	Particle* particle_1 = Particle::LoadParticleTexture("effect1.png");
@@ -197,6 +204,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		object3d_1->Update();
 		object3d_2->Update();
 
+		//fbx更新
+		fbxObject3d_1->Update();
+
 		//パーティクル
 		pm_1->Update();
 		pm_2->Update();
@@ -211,12 +221,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Object3d::PreDraw(dxCommon->GetCommandList());
 
 		//オブジェクト
-		//object3d_1->Draw(viewProjection);
-		//object3d_2->Draw(viewProjection)/
+		object3d_1->Draw(viewProjection);
+		object3d_2->Draw(viewProjection);
 
 		//3Dオブジェクト描画前処理
 		Object3d::PostDraw();
 
+		//3Dオブジェクト描画前処理
+		FbxObject3d::PreDraw(dxCommon->GetCommandList());
+
+		fbxObject3d_1->Draw(viewProjection);
+
+		//3Dオブジェクト描画前処理
+		FbxObject3d::PostDraw();
 
 		//エフェクト描画前処理
 		ParticleManager::PreDraw(dxCommon->GetCommandList());
@@ -229,8 +246,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		ParticleManager::PostDraw();
 
 		//ここにポリゴンなどの描画処理を書く
-		//sprite_1->Draw(dxCommon);
-		//sprite_2->Draw(dxCommon);*
+		sprite_1->Draw(dxCommon);
+		sprite_2->Draw(dxCommon);
 
 #pragma endregion 最初のシーンの描画
 
@@ -249,9 +266,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//3Dモデル解放
 	delete model_1;
 	delete model_2;
+	delete fbxModel_1;
+
 	//3Dオブジェクト解放
 	delete object3d_1;
 	delete object3d_2;
+	delete fbxObject3d_1;
 
 	//パーティクル
 	delete particle_1;

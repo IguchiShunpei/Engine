@@ -6,6 +6,7 @@
 #include <cmath> // sin cos
 
 const float EPSILON = 0.000001f;
+const float Matrix4::PI = 3.141592f;
 
 Matrix4::Matrix4()
 {

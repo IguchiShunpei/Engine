@@ -30,7 +30,7 @@ public:// メンバ関数
 
 	const Vector3& GetEye() { return eye; }
 
-	void SetEye(Vector3& eye) { this->eye = eye; }
+	void SetEye(const Vector3& eye) { this->eye = eye; }
 
 private:// プライベート関数
 	// 円周率

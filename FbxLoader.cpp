@@ -37,7 +37,7 @@ void FbxLoader::Finalize()
 	fbxManager->Destroy();
 }
 
-void FbxLoader::LoadModelFromFile(const string& modelName)
+FbxModel* FbxLoader::LoadModelFromFile(const string& modelName)
 {
 	//モデルと同じ名前のフォルダから読み込む
 	const string directoryPath = baseDirectory + modelName + "/";
@@ -70,6 +70,8 @@ void FbxLoader::LoadModelFromFile(const string& modelName)
 	fbxScene->Destroy();
 	//バッファ生成
 	fbxModel->CreateBuffers(device);
+
+	return fbxModel;
 }
 
 void FbxLoader::ParseNodeRecursive(FbxModel* fbxModel, FbxNode* fbxNode, Node* parent)
@@ -86,23 +88,35 @@ void FbxLoader::ParseNodeRecursive(FbxModel* fbxModel, FbxNode* fbxNode, Node* p
 	FbxDouble3 translation = fbxNode->LclTranslation.Get();
 
 	//形式変換して代入
-	node.rotation = { (float)rotation[0],(float)rotation[1], (float)rotation[2],0.0f };
+	node.rotation = { (float)rotation[0],(float)rotation[1], (float)rotation[2],0.0f};
 	node.scaling = { (float)scaling[0],(float)scaling[1], (float)scaling[2],0.0f };
 	node.translation = { (float)translation[0],(float)translation[1], (float)translation[2],1.0f };
 
 	//回転角をDegree(度)からラジアンに変換
-	node.rotation.m128_f32[0] = XMConvertToRadians(node.rotation.m128_f32[0]);
-	node.rotation.m128_f32[1] = XMConvertToRadians(node.rotation.m128_f32[1]);
-	node.rotation.m128_f32[2] = XMConvertToRadians(node.rotation.m128_f32[2]);
+	node.rotation.x = Matrix4::ConvertToRadian(node.rotation.x);
+	node.rotation.y = Matrix4::ConvertToRadian(node.rotation.y);
+	node.rotation.z = Matrix4::ConvertToRadian(node.rotation.z);
 
 	//スケール、回転、平行移動行列の計算
-	XMMATRIX matScaling, matRotation, matTranslation;
-	matScaling = XMMatrixScalingFromVector(node.scaling);
-	matRotation = XMMatrixRotationRollPitchYawFromVector(node.rotation);
-	matTranslation = XMMatrixTranslationFromVector(node.translation);
+	Matrix4 matScaling, matRotation, matTranslation;
+	Matrix4 matRotX, matRotY, matRotZ;
+	Vector3 nodeScale, nodeRot, nodeTrans;
+
+	nodeScale = { node.scaling.x,node.scaling.y,node.scaling.z };
+	nodeRot = { node.rotation.x,node.rotation.y,node.rotation.z };
+	nodeTrans = { node.translation.x,node.translation.y,node.translation.z };
+
+	matScaling = Matrix4::identity();
+	matScaling.scale(nodeScale);
+	matRotation = Matrix4::identity();
+	matRotation *= matRotZ.rotateZ(nodeRot.z);
+	matRotation *= matRotX.rotateX(nodeRot.x);
+	matRotation *= matRotY.rotateY(nodeRot.y);
+	matTranslation = Matrix4::identity();
+	matTranslation.translate(nodeTrans);
 
 	//ローカル変形行列の計算
-	node.transform = XMMatrixIdentity();
+	node.transform = Matrix4::identity();
 	node.transform *= matScaling;
 	node.transform *= matRotation;
 	node.transform *= matTranslation;
