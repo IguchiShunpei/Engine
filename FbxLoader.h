@@ -1,6 +1,10 @@
 ﻿#pragma once
 #include "fbxsdk.h"
 #include "FbxModel.h"
+#include "Matrix4.h"
+#include "Vector4.h"
+#include "Vector3.h"
+#include "Vector2.h"
 
 #include <d3d12.h>
 #include <d3dx12.h>
@@ -23,7 +27,7 @@ public:
 	void Finalize();
 
 	//ファイルからFBXモデル読み込み
-	void LoadModelFromFile(const string& modelName);
+	FbxModel* LoadModelFromFile(const string& modelName);
 
 	//再帰的にノード構成を解析
 	void ParseNodeRecursive(FbxModel* fbxModel, FbxNode* fbxNode,Node* parent = nullptr);
@@ -64,6 +68,8 @@ private:
 	FbxManager* fbxManager = nullptr;
 	//FBXインポータ
 	FbxImporter* fbxImporter = nullptr;
+	//FBXモデル
+	FbxModel* fbxModel = nullptr;
 	//テクスチャがない場合の標準テクスチャファイル名
 	static const string defaultTextureFileName;
 

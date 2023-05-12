@@ -7,6 +7,10 @@
 #include<wrl.h>
 #include<d3d12.h>
 #include<d3dx12.h>
+#include "Matrix4.h"
+#include "Vector4.h"
+#include "Vector3.h"
+#include "Vector2.h"
 
 using namespace DirectX;
 
@@ -15,15 +19,15 @@ struct Node
 	//名前
 	std::string name;
 	//ローカルスケール
-	XMVECTOR scaling = { 1,1,1 };
+	Vector4 scaling = { 1,1,1,0 };
 	//ローカル回転角
-	XMVECTOR rotation = { 0,0,0 };
+	Vector4 rotation = { 0,0,0,0 };
 	//ローカル移動
-	XMVECTOR translation = { 0,0,0 };
+	Vector4 translation = { 0,0,0,0 };
 	//ローカル変形行列
-	XMMATRIX transform;
+	Matrix4 transform;
 	//グローバル変形行列
-	XMMATRIX glabalTransform;
+	Matrix4 glabalTransform;
 	//親ノード
 	Node* parent = nullptr;
 };
@@ -33,11 +37,6 @@ class FbxModel
 private://エイリアス
 	//Microsoft::WRL::を省略
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-	//DirectX::を省略
-	using XMFLOAT2 = DirectX::XMFLOAT2;
-	using XMFLOAT3 = DirectX::XMFLOAT3;
-	using XMFLOAT4 = DirectX::XMFLOAT4;
-	using XMMATRIX = DirectX::XMMATRIX;
 	using TexMetadata = DirectX::TexMetadata;
 	using ScratchImage = DirectX::ScratchImage;
 	//std::を省略
@@ -48,9 +47,9 @@ public://サブクラス
 	//頂点データ構造体
 	struct VertexPosNormalUv
 	{
-		DirectX::XMFLOAT3 pos; //xyz座標
-		DirectX::XMFLOAT3 normal; //法線ベクトル
-		DirectX::XMFLOAT2 uv; //uv座標
+		Vector3 pos; //xyz座標
+		Vector3 normal; //法線ベクトル
+		Vector2 uv; //uv座標
 	};
 public:
 	//フレンドクラス
@@ -62,8 +61,12 @@ public:
 	//描画
 	void Draw(ID3D12GraphicsCommandList* cmdList);
 	//モデルの変形行列取得(定数バッファにワールド行列を送るため)
-	const XMMATRIX& getModelTransform() { return meshNode->glabalTransform; }
+	const Matrix4& getModelTransform() { return meshNode->glabalTransform; }
+	// setter
+	static void SetDevice(ID3D12Device* device) { FbxModel::device = device; }
 private:
+	// デバイス
+	static ID3D12Device* device;
 	//モデル名
 	std::string name;
 	//ノード配列
@@ -76,8 +79,8 @@ private:
 	std::vector<unsigned short> indices;
 
 	//アンビエント係数
-	DirectX::XMFLOAT3 ambient = { 1,1,1 };
-	DirectX::XMFLOAT3 diffuse = { 1,1,1 };
+	Vector3 ambient = { 1,1,1 };
+	Vector3 diffuse = { 1,1,1 };
 	DirectX::TexMetadata metadata = {};
 	DirectX::ScratchImage scratchImg = {};
 
