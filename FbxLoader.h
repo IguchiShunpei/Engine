@@ -49,6 +49,12 @@ public:
 	//ディレクトリを含んだファイルパスからファイル名を抽出する
 	std::string ExtractFileName(const std::string& path);
 
+	//FBXの行列をMatrix4に変換
+	static void ConvertMatrix4FromFbx(Matrix4* dst, const FbxAMatrix& src);
+
+	//スキニング情報の読み取り
+	void ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh);
+
 public://定数
 	//モデル格納ルートパス
 	static const string baseDirectory;

@@ -11,6 +11,7 @@
 #include "Vector4.h"
 #include "Vector3.h"
 #include "Vector2.h"
+#include<fbxsdk.h>
 
 using namespace DirectX;
 
@@ -43,19 +44,42 @@ private://エイリアス
 	using string = std::string;
 	template<class T>using vector = std::vector<T>;
 
+public://定数
+	//ボーンインデックスの最大数
+	static const int MAX_BONE_INDICES = 4;
+
 public://サブクラス
 	//頂点データ構造体
-	struct VertexPosNormalUv
+	struct VertexPosNormalUvSkin
 	{
 		Vector3 pos; //xyz座標
 		Vector3 normal; //法線ベクトル
 		Vector2 uv; //uv座標
+		UINT boneIndex[MAX_BONE_INDICES];//ボーン番号
+		float boneWeight[MAX_BONE_INDICES];//ボーン重量
+	};
+
+	//ボーン構造体
+	struct Bone
+	{
+		//名前
+		std::string name;
+		//初期姿勢の逆行列
+		Matrix4 invInitialPose;
+		//クラスター(FBX側のボーン情報)
+		FbxCluster* fbxCluster;
+		//コンストラクタ
+		Bone(const std::string& name)
+		{
+			this->name = name;
+		}
 	};
 public:
 	//フレンドクラス
 	friend class FbxLoader;
-
 public:
+	//デストラクタ
+	~FbxModel();
 	//バッファ生成
 	void CreateBuffers(ID3D12Device* device);
 	//描画
@@ -64,6 +88,9 @@ public:
 	const Matrix4& getModelTransform() { return meshNode->glabalTransform; }
 	// setter
 	static void SetDevice(ID3D12Device* device) { FbxModel::device = device; }
+	//getter
+	std::vector<Bone>& GetBones() { return bones; }
+	FbxScene* GetFbxScene() { return fbxScene; }
 private:
 	// デバイス
 	static ID3D12Device* device;
@@ -71,10 +98,12 @@ private:
 	std::string name;
 	//ノード配列
 	std::vector<Node> nodes;
+	//ボーン配列
+	std::vector<Bone> bones;
 	//メッシュを持つノード
 	Node* meshNode = nullptr;
 	//頂点データ配列
-	std::vector<VertexPosNormalUv> vertices;
+	std::vector<VertexPosNormalUvSkin> vertices;
 	//頂点インデックス配列
 	std::vector<unsigned short> indices;
 
@@ -96,4 +125,6 @@ private:
 	D3D12_INDEX_BUFFER_VIEW ibView = {};
 	//SRV用デスクリプタヒープ
 	ComPtr<ID3D12DescriptorHeap> descHeapSRV;
+	//FBXシーン
+	FbxScene* fbxScene = nullptr;
 };
