@@ -85,7 +85,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// ビュープロジェクションの初期化
 	ViewProjection::StaticInitialize(dxCommon->GetDevice());
 	viewProjection->Initialize();
-	viewProjection->SetEye({ 0,50,300 });
+
 	//スプライトのポインタ
 	Sprite* sprite_1 = new Sprite;
 	Sprite* sprite_2 = new Sprite;
@@ -124,6 +124,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	FbxObject3d* fbxObject3d_1 = FbxObject3d::Create();
 	//オブジェクトにモデルを紐付ける
 	fbxObject3d_1->SetModel(fbxModel_1);
+	fbxObject3d_1->SetPosition({ 0,-5,20 });
+	fbxObject3d_1->SetScale({ 0.1,0.1,0.1 });
 
 	//パーティクル
 	Particle* particle_1 = Particle::LoadParticleTexture("effect1.png");

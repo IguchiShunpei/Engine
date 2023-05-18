@@ -49,7 +49,7 @@ private:// プライベート関数
 public:// パブリック変数
 #pragma region ビュー行列の設定
 	// 視点座標
-	Vector3 eye = { 0, 5, -10.0f };
+	Vector3 eye = { 0, 0, -10.0f };
 	// 注視点座標
 	Vector3 target = { 0, 0, 0 };
 	// 上方向ベクトル
