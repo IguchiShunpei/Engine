@@ -9,6 +9,7 @@
 #include "WorldTransform.h"
 #include "ViewProjection.h"
 #include "FbxModel.h"
+#include "FbxLoader.h"
 
 /// 3Dオブジェクト
 class FbxObject3d
@@ -16,6 +17,18 @@ class FbxObject3d
 private: // エイリアス
 	// Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+
+public: // 定数
+	//ボーンの最大数
+	static const int MAX_BONES = 32;
+
+public:
+	//定数バッファ用データ構造体(スキニング)
+	struct ConstBufferDataSkin
+	{
+		Matrix4 bones[MAX_BONES];
+	};
+
 
 public: // 静的メンバ関数
 	/// 静的初期化
@@ -86,5 +99,7 @@ protected: // メンバ変数
 	FbxModel* fbxModel = nullptr;
 	// ローカルワールド変換行列
 	Matrix4 matWorld;
+	//定数バッファ(スキン)
+	ComPtr<ID3D12Resource> constBuffSkin;
 };
 

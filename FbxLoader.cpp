@@ -393,7 +393,7 @@ void FbxLoader::ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh)
 		Matrix4 initialPose;
 		ConvertMatrix4FromFbx(&initialPose, fbxMat);
 		//初期姿勢行列の逆行列を得る
-		bone.invInitialPose.MakeInverse();
+		bone.invInitialPose = initialPose.MakeInverse();
 	}
 	//ボーン番号とスキンウェイトのペア
 	struct WeightSet
@@ -404,7 +404,7 @@ void FbxLoader::ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh)
 	//二次元配列(ジャグ配列)
 	//list:頂点が影響を受けるボーンの全リスト vector:それを全頂点分
 	std::vector<std::list<WeightSet>>
-		weightLists(fbxModel->vertices.size());
+	weightLists(fbxModel->vertices.size());
 	//全てのボーンについて
 	for (int i = 0; i < clusterCount; i++)
 	{
@@ -460,6 +460,7 @@ void FbxLoader::ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh)
 				}
 				//合計で1.0f(100%)になるように調整
 				vertices[i].boneWeight[0] = 1.0f - weight;
+				break;
 			}
 		}
 	}
