@@ -86,46 +86,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	ViewProjection::StaticInitialize(dxCommon->GetDevice());
 	viewProjection->Initialize();
 
-	//スプライトのポインタ
-	Sprite* sprite_1 = new Sprite;
-	Sprite* sprite_2 = new Sprite;
-	//スプライトの初期化
-	//1
-	sprite_1->Initialize(dxCommon, WinApp::window_width, WinApp::window_height);
-	sprite_1->LoadTexture(1, L"Resources/texture.jpg", dxCommon);
-	sprite_1->SetPosition({ 0,0,0 });
-	//2
-	sprite_2->Initialize(dxCommon, WinApp::window_width, WinApp::window_height);
-	sprite_2->LoadTexture(1, L"Resources/reimu.png", dxCommon);
-	sprite_2->SetPosition({ 100,100,0 });
-
-	//3Dオブジェクト静的初期化
-	Object3d::StaticInitialize(dxCommon->GetDevice(), WinApp::window_width, WinApp::window_height);
+	//パーティクル静的初期化
 	ParticleManager::StaticInitialize(dxCommon->GetDevice());
-	//OBJからモデルデータを読み込む
-	Model* model_1 = Model::LoadFromOBJ("triangle_mat");
-	Model* model_2 = Model::LoadFromOBJ("player");
-	//3Dオブジェクト生成
-	Object3d* object3d_1 = Object3d::Create();
-	Object3d* object3d_2 = Object3d::Create();
-	//オブジェクトにモデルを紐付ける
-	object3d_1->SetModel(model_1);
-	object3d_2->SetModel(model_2);
-	//オブジェクトの位置を指定
-	object3d_2->SetPosition({ -5,0,0 });
-	//スケールを指定
-	object3d_2->SetScale({ 1,1,1 });
-
 	//FBX
 	FbxObject3d::StaticInitialize(dxCommon->GetDevice(), WinApp::window_width, WinApp::window_height);
 	//FBX読み込み
-	FbxModel* fbxModel_1 = FbxLoader::GetInstance()->LoadModelFromFile("cube");
+	FbxModel* fbxModel_1 = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
 	//3Dオブジェクト生成
 	FbxObject3d* fbxObject3d_1 = FbxObject3d::Create();
 	//オブジェクトにモデルを紐付ける
 	fbxObject3d_1->SetModel(fbxModel_1);
 	fbxObject3d_1->SetPosition({ 0,-5,20 });
-	fbxObject3d_1->SetScale({ 0.1,0.1,0.1 });
+	fbxObject3d_1->SetScale({ 1,1,1 });
 
 	//パーティクル
 	Particle* particle_1 = Particle::LoadParticleTexture("effect1.png");
@@ -156,22 +128,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		//入力の更新
 		input->Update();
 
-		// オブジェクト移動
-		if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
-		{
-			// 現在の座標を取得
-			Vector3 objPos = object3d_1->GetPosition();
-
-			// 移動後の座標を計算
-			if (input->PushKey(DIK_UP)) { objPos.y += 0.1f; }
-			else if (input->PushKey(DIK_DOWN)) { objPos.y -= 0.1f; }
-			if (input->PushKey(DIK_RIGHT)) { objPos.x += 0.1f; }
-			else if (input->PushKey(DIK_LEFT)) { objPos.x -= 0.1f; }
-
-			// 座標の変更を反映
-			object3d_1->SetPosition(objPos);
-		}
-
 		if (input->PushKey(DIK_W) || input->PushKey(DIK_A) || input->PushKey(DIK_S) || input->PushKey(DIK_D))
 		{
 			// 現在の座標を取得
@@ -198,14 +154,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		viewProjection->UpdateMatrix();
 		xmViewProjection->Update();
 
-		//スプライト更新
-		sprite_1->Update();
-		sprite_2->Update();
-
-		//3dオブジェクト更新
-		object3d_1->Update();
-		object3d_2->Update();
-
 		//fbx更新
 		fbxObject3d_1->Update();
 
@@ -219,15 +167,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		dxCommon->PreDraw();
 
 #pragma region 最初のシーンの描画
-		//3Dオブジェクト描画前処理
-		Object3d::PreDraw(dxCommon->GetCommandList());
-
-		//オブジェクト
-		object3d_1->Draw(viewProjection);
-		object3d_2->Draw(viewProjection);
-
-		//3Dオブジェクト描画前処理
-		Object3d::PostDraw();
 
 		//3Dオブジェクト描画前処理
 		FbxObject3d::PreDraw(dxCommon->GetCommandList());
@@ -248,8 +187,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		ParticleManager::PostDraw();
 
 		//ここにポリゴンなどの描画処理を書く
-		sprite_1->Draw(dxCommon);
-		sprite_2->Draw(dxCommon);
+		/*sprite_1->Draw(dxCommon);
+		sprite_2->Draw(dxCommon);*/
 
 #pragma endregion 最初のシーンの描画
 
@@ -266,13 +205,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #pragma region 基盤システムの終了
 
 	//3Dモデル解放
-	delete model_1;
-	delete model_2;
 	delete fbxModel_1;
 
 	//3Dオブジェクト解放
-	delete object3d_1;
-	delete object3d_2;
 	delete fbxObject3d_1;
 
 	//パーティクル
@@ -292,10 +227,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	//入力解放
 	delete input;
-
-	//スプライトの解放
-	delete sprite_1;
-	delete sprite_2;
 
 	//WindowsAPI解放
 	delete winApp;

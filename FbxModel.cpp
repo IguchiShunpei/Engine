@@ -133,7 +133,6 @@ void FbxModel::Draw(ID3D12GraphicsCommandList* cmdList)
 	// シェーダリソースビューをセット
 	cmdList->SetGraphicsRootDescriptorTable(3, descHeapSRV->GetGPUDescriptorHandleForHeapStart());
 
-
 	// 描画コマンド
 	cmdList->DrawIndexedInstanced((UINT)indices.size(), 1, 0, 0, 0);
 }
