@@ -23,6 +23,10 @@ public://メンバ関数
 	//getter
 	HWND GetHwnd() const { return hwnd_; }
 	HINSTANCE GetHInstance() const { return w.hInstance; }
+
+public:
+	static WinApp* GetInstance();
+
 private:
 	//ウィンドウハンドル
 	HWND hwnd_ = nullptr;

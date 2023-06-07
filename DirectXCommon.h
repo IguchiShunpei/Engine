@@ -7,9 +7,13 @@
 #include <dxgi1_6.h>
 #include <wrl.h>
 #include "WinApp.h"
+#include "FPSFixed.h"
 
 class DirectXCommon
 {
+public:
+	static DirectXCommon* GetInstance();
+
 public:
 	//初期化
 	void Initialize(WinApp*winApp);
@@ -44,15 +48,22 @@ public:
 	//コマンドリスト取得
 	ID3D12GraphicsCommandList* GetCommandList() const { return commandList_.Get(); }
 
+	// 終了処理
+	void fpsFixedFinalize();
+
 private: //メンバ関数
-	//FPS固定初期化
-	void InitializeFixFPS();
-	//FPS固定更新
-	void UpdateFixFPS();
+	template <class T>
+	inline void safe_delete(T*& p) {
+		delete p;
+		p = nullptr;
+	}
 
 private:
 	//WindowsAPI
 	WinApp* winApp = nullptr;
+	//FPS
+	FPSFixed* fpsFixed = nullptr;
+
 	//DXGIファクトリ
 	Microsoft::WRL::ComPtr<IDXGIFactory7> dxgiFactory_;
 	//DirectX12デバイス
@@ -83,8 +94,5 @@ private:
 	UINT64 fenceVal_ = 0;
 	// 結果確認
 	HRESULT result;
-
-	//記録時間(FPS固定用)
-	std::chrono::steady_clock::time_point reference_;
 };
 
