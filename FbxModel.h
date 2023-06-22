@@ -28,7 +28,7 @@ struct Node
 	//ローカル変形行列
 	Matrix4 transform;
 	//グローバル変形行列
-	Matrix4 glabalTransform;
+	Matrix4 globalTransform;
 	//親ノード
 	Node* parent = nullptr;
 };
@@ -85,7 +85,7 @@ public:
 	//描画
 	void Draw(ID3D12GraphicsCommandList* cmdList);
 	//モデルの変形行列取得(定数バッファにワールド行列を送るため)
-	const Matrix4& getModelTransform() { return meshNode->glabalTransform; }
+	const Matrix4& getModelTransform() { return meshNode->globalTransform; }
 	// setter
 	static void SetDevice(ID3D12Device* device) { FbxModel::device = device; }
 	//getter

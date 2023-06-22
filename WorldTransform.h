@@ -59,6 +59,7 @@ public:// パブリック変数
 	// ローカル → ワールド変換行列
 	Matrix4 matWorld_;
 
+
 	// 親となるワールド変換へのポインタ
 	const WorldTransform* parent_ = nullptr;
 
