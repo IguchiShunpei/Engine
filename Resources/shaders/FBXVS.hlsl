@@ -50,9 +50,9 @@ VSOutput main(VSInput input)
 {
 	//スキニング計算
 	SkinOutput skinned = ComputeSkin(input);
-	float4 wnormal = normalize(mul(matWorld, float4(input.normal, 0)));
+	float4 wnormal = normalize(mul(matWorld, float4(skinned.normal, 0)));
 	VSOutput output; // ピクセルシェーダーに渡す値
-	output.svpos = mul(mul(mul(projection, view), matWorld), input.pos);
+	output.svpos = mul(mul(mul(projection, view), matWorld), skinned.pos);
 	output.normal = wnormal.xyz;
 	output.uv = input.uv;
 	return output;

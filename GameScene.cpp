@@ -115,8 +115,8 @@ void GameScene::Draw()
 	ParticleManager::PreDraw(dxCommon->GetCommandList());
 
 	//パーティクル
-	//pm_1->Draw();
-	//pm_2->Draw();
+	pm_1->Draw();
+	pm_2->Draw();
 
 	//エフェクト描画後処理
 	ParticleManager::PostDraw();

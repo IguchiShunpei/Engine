@@ -88,7 +88,7 @@ void FbxLoader::ParseNodeRecursive(FbxModel* fbxModel, FbxNode* fbxNode, Node* p
 	FbxDouble3 translation = fbxNode->LclTranslation.Get();
 
 	//形式変換して代入
-	node.rotation = { (float)rotation[0],(float)rotation[1], (float)rotation[2],0.0f};
+	node.rotation = { (float)rotation[0],(float)rotation[1], (float)rotation[2],0.0f };
 	node.scaling = { (float)scaling[0],(float)scaling[1], (float)scaling[2],0.0f };
 	node.translation = { (float)translation[0],(float)translation[1], (float)translation[2],1.0f };
 
@@ -122,25 +122,22 @@ void FbxLoader::ParseNodeRecursive(FbxModel* fbxModel, FbxNode* fbxNode, Node* p
 	node.transform *= matTranslation;
 
 	//グローバル変形行列の計算
-	node.glabalTransform = node.transform;
+	node.globalTransform = node.transform;
 	if (parent)
 	{
 		node.parent = parent;
 		//親の変形を乗算
-		node.glabalTransform *= parent->glabalTransform;
+		node.globalTransform *= parent->globalTransform;
 	}
 	//FBXノードのメッシュ情報を解析
 	FbxNodeAttribute* fbxNodeAttribute = fbxNode->GetNodeAttribute();
 
 	if (fbxNodeAttribute)
 	{
-		if (fbxNodeAttribute)
+		if (fbxNodeAttribute->GetAttributeType() == FbxNodeAttribute::eMesh)
 		{
-			if (fbxNodeAttribute->GetAttributeType() == FbxNodeAttribute::eMesh)
-			{
-				fbxModel->meshNode = &node;
-				ParseMesh(fbxModel, fbxNode);
-			}
+			fbxModel->meshNode = &node;
+			ParseMesh(fbxModel, fbxNode);
 		}
 	}
 
@@ -404,7 +401,7 @@ void FbxLoader::ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh)
 	//二次元配列(ジャグ配列)
 	//list:頂点が影響を受けるボーンの全リスト vector:それを全頂点分
 	std::vector<std::list<WeightSet>>
-	weightLists(fbxModel->vertices.size());
+		weightLists(fbxModel->vertices.size());
 	//全てのボーンについて
 	for (int i = 0; i < clusterCount; i++)
 	{

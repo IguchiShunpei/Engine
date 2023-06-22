@@ -73,7 +73,6 @@ FbxObject3d* FbxObject3d::Create()
 		return nullptr;
 	}
 
-
 	return fbxObject3d;
 }
 
