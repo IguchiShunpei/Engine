@@ -1,5 +1,6 @@
 ﻿#include "FbxLoader.h"
 #include <cassert>
+#include "DirectXMath.h"
 
 using namespace DirectX;
 
@@ -389,6 +390,17 @@ void FbxLoader::ParseSkin(FbxModel* fbxModel, FbxMesh* fbxMesh)
 		//Matrixr4型に変換
 		Matrix4 initialPose;
 		ConvertMatrix4FromFbx(&initialPose, fbxMat);
+
+		//XMMATRIX initialPoseXM;
+
+		//for (int i = 0; i < 4; i++) {
+		//	for (int j = 0; j < 4; j++) {
+		//		initialPoseXM.r[i].m128_f32[j] = initialPose.m[i][j];
+		//	}
+		//}
+
+		//XMMATRIX invInitialPoseXM = XMMatrixInverse(nullptr, initialPoseXM);
+
 		//初期姿勢行列の逆行列を得る
 		bone.invInitialPose = initialPose.MakeInverse();
 	}
