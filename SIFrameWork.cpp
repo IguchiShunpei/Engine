@@ -19,6 +19,12 @@ void SIFrameWork::Initialize()
 	ParticleManager::StaticInitialize(dxCommon->GetDevice());
 	// ビュープロジェクションの初期化
 	ViewProjection::StaticInitialize(dxCommon->GetDevice());
+
+	//ポストエフェクト用テクスチャ読み込み
+	postEffect_1 = new PostEffect();
+	postEffect_1->Initialize(dxCommon, WinApp::window_width, WinApp::window_height);
+	postEffect_1->LoadTexture(1, L"Resources/texture.jpg", dxCommon);
+	postEffect_1->SetPosition({ 0,0,0 });
 }
 
 void SIFrameWork::Finalize()
@@ -28,6 +34,9 @@ void SIFrameWork::Finalize()
 
 	// DirectX解放
 	dxCommon->fpsFixedFinalize();
+
+	//ポストエフェクト
+	delete postEffect_1;
 }
 
 void SIFrameWork::Update()
@@ -58,8 +67,17 @@ void SIFrameWork::Run()
 			break;
 		}
 
-		// 描画
-		Draw();
+		//描画前処理
+		dxCommon->PreDraw();
+
+		//ポストエフェクト描画
+		postEffect_1->Draw(dxCommon, dxCommon->GetCommandList());
+
+		//// ゲームシーン描画
+		//Draw();
+
+		// 描画後処理
+		dxCommon->PostDraw();
 	}
 
 	// ゲームの終了

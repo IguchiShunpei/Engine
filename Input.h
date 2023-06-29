@@ -4,9 +4,6 @@
 #include"WinApp.h"
 #include<dinput.h>
 
-#define DIRECTINPUT_VERSION  0x0800 //DirectInputのバージョン指定
-#include <dinput.h>
-
 class Input
 {
 public:

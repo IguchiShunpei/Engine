@@ -1,13 +1,14 @@
 #pragma once
-#include"Input.h"
-#include"WinApp.h"
-#include"DirectXCommon.h"
+#include "Input.h"
+#include "WinApp.h"
+#include "DirectXCommon.h"
 #include "Sprite.h"
 #include "Object3d.h"
 #include "FbxObject3d.h"
-#include"Model.h"
+#include "Model.h"
 #include "ParticleManager.h"
 #include "FbxLoader.h"
+#include "PostEffect.h"
 
 class SIFrameWork
 {
@@ -37,6 +38,8 @@ private:
 	DirectXCommon* dxCommon = nullptr;
 	//入力のポインタ
 	Input* input = nullptr;
+	//ポストエフェクト
+	PostEffect* postEffect_1 = nullptr;
 private:
 	bool endRequest = false;
 };
