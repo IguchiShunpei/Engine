@@ -52,6 +52,10 @@ void GameScene::Finalize()
 	//FBX解放
 	FbxLoader::GetInstance()->Finalize();
 
+	//カメラ解放
+	delete viewProjection;
+	delete xmViewProjection;
+
 	SIFrameWork::Finalize();
 }
 
@@ -106,7 +110,7 @@ void GameScene::Draw()
 	//3Dオブジェクト描画前処理
 	FbxObject3d::PreDraw(dxCommon->GetCommandList());
 
-	fbxObject3d_1->Draw(viewProjection);
+	/*fbxObject3d_1->Draw(viewProjection);*/
 
 	//3Dオブジェクト描画前処理
 	FbxObject3d::PostDraw();
