@@ -46,17 +46,23 @@
     <Filter Include="ヘッダー ファイル\Math">
       <UniqueIdentifier>{7eb1c4c9-c084-4e66-8f54-c8ee6c81696a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\camera">
-      <UniqueIdentifier>{315b93d7-e65a-4f4f-b021-8f37beb4214b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\camera">
-      <UniqueIdentifier>{c33c88d6-f11e-4b88-8792-97d8c66b43d3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Scene">
       <UniqueIdentifier>{2d82195f-a035-4e29-a5b9-93b85b0d2b7f}</UniqueIdentifier>
     </Filter>
     <Filter Include="ヘッダー ファイル\Scene">
       <UniqueIdentifier>{96dbd227-67e0-42c7-be9c-ec9b694eaf34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Level">
+      <UniqueIdentifier>{b1271b31-4ff8-4252-93d9-2fbfdc3c3fcc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Camera">
+      <UniqueIdentifier>{315b93d7-e65a-4f4f-b021-8f37beb4214b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Camera">
+      <UniqueIdentifier>{c33c88d6-f11e-4b88-8792-97d8c66b43d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Level">
+      <UniqueIdentifier>{14e97b29-520d-4f0b-bb57-dddae84365ed}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -97,7 +103,7 @@
       <Filter>ソース ファイル\Math</Filter>
     </ClCompile>
     <ClCompile Include="ViewProjection.cpp">
-      <Filter>ソース ファイル\camera</Filter>
+      <Filter>ソース ファイル\Camera</Filter>
     </ClCompile>
     <ClCompile Include="Particle.cpp">
       <Filter>ソース ファイル\3D</Filter>
@@ -106,7 +112,7 @@
       <Filter>ソース ファイル\3D</Filter>
     </ClCompile>
     <ClCompile Include="XMViewProjection.cpp">
-      <Filter>ソース ファイル\camera</Filter>
+      <Filter>ソース ファイル\Camera</Filter>
     </ClCompile>
     <ClCompile Include="FbxLoader.cpp">
       <Filter>ソース ファイル\3D</Filter>
@@ -125,6 +131,9 @@
     </ClCompile>
     <ClCompile Include="FPSFixed.cpp">
       <Filter>ソース ファイル\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelLoader.cpp">
+      <Filter>ソース ファイル\Level</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -220,7 +229,7 @@
       <Filter>ヘッダー ファイル\3D</Filter>
     </ClInclude>
     <ClInclude Include="XMViewProjection.h">
-      <Filter>ヘッダー ファイル\camera</Filter>
+      <Filter>ヘッダー ファイル\Camera</Filter>
     </ClInclude>
     <ClInclude Include="FbxLoader.h">
       <Filter>ヘッダー ファイル\3D</Filter>
@@ -235,13 +244,16 @@
       <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
     <ClInclude Include="ViewProjection.h">
-      <Filter>ヘッダー ファイル\camera</Filter>
+      <Filter>ヘッダー ファイル\Camera</Filter>
     </ClInclude>
     <ClInclude Include="SIFrameWork.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
     <ClInclude Include="FPSFixed.h">
       <Filter>ヘッダー ファイル\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelLoader.h">
+      <Filter>ヘッダー ファイル\Level</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
