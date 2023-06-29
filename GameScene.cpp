@@ -100,12 +100,12 @@ void GameScene::Update()
 		//パーティクル
 		pm_1->Update();
 		pm_2->Update();
+
+		/*postEffect_1->Update();*/
 }
 
 void GameScene::Draw()
 {
-	//描画前処理
-	dxCommon->PreDraw();
 
 #pragma region 最初のシーンの描画
 
@@ -127,12 +127,6 @@ void GameScene::Draw()
 	//エフェクト描画後処理
 	ParticleManager::PostDraw();
 
-	//ここにポリゴンなどの描画処理を書く
-	/*sprite_1->Draw(dxCommon);
-	sprite_2->Draw(dxCommon);*/
-
 #pragma endregion 最初のシーンの描画
 
-	// 描画後処理
-	dxCommon->PostDraw();
 }

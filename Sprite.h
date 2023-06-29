@@ -68,7 +68,7 @@ public:
 	int SetTextureIndex(int textureIndex) { textureIndex_ = textureIndex; }
 	//テクスチャ番号getter
 	int GetTextureIndex() const { return textureIndex_; }
-private:
+protected:
 	// ビュー行列
 	static XMMATRIX matView;
 	// 射影行列
