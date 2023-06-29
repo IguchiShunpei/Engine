@@ -88,6 +88,9 @@ public: // メンバ関数
 	void SetRotationX(const float& rotation) { this->worldTransform_.rotation_.x = rotation; }
 	void SetRotationY(const float& rotation) { this->worldTransform_.rotation_.y = rotation; }
 
+	//アニメーション
+	void PlayAnimation();
+
 public:
 	// ワールド変換データ
 	WorldTransform worldTransform_;
@@ -101,5 +104,15 @@ protected: // メンバ変数
 	Matrix4 matWorld;
 	//定数バッファ(スキン)
 	ComPtr<ID3D12Resource> constBuffSkin;
+	//1フレームの時間
+	FbxTime frameTime;
+	//アニメーション開始時間
+	FbxTime startTime;
+	//アニメーション終了時間
+	FbxTime endTime;
+	//現在時間(アニメーション)
+	FbxTime currentTime;
+	//アニメーション再生中
+	bool isPlay = false;
 };
 

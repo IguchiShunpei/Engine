@@ -237,6 +237,9 @@ void FbxObject3d::InitializeGraphicsPipeline()
 
 bool FbxObject3d::Initialize()
 {
+	//1フレーム分の時間を60FPSで設定
+	frameTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
+
 	//worldTransform初期化
 	worldTransform_.Initialize();
 
@@ -266,6 +269,18 @@ bool FbxObject3d::Initialize()
 
 void FbxObject3d::Update()
 {
+	//アニメーション
+	if (isPlay)
+	{
+		//1フレーム進める
+		currentTime += frameTime;
+		//最後まで再生したら先頭に戻す
+		if (currentTime > endTime)
+		{
+			currentTime = startTime;
+		}
+	}
+
 	// ワールドトランスフォームの行列更新と転送
 	worldTransform_.UpdateMatrix();
 
@@ -282,13 +297,14 @@ void FbxObject3d::Update()
 		Matrix4 matCurrentPose;
 		//今の姿勢行列を取得
 		FbxAMatrix fbxCurrentPose =
-			bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(0);
+			bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime);
 		//Matrix4に変換
 		FbxLoader::ConvertMatrix4FromFbx(&matCurrentPose,fbxCurrentPose);
 		//合成してスキニング行列に
 		constMapSkin->bones[i] = bones[i].invInitialPose * matCurrentPose;
 	}
 	constBuffSkin->Unmap(0, nullptr);
+
 }
 
 void FbxObject3d::Draw(ViewProjection* viewProjection)
@@ -309,4 +325,23 @@ void FbxObject3d::Draw(ViewProjection* viewProjection)
 
 	// モデルを描画
 	fbxModel->Draw(cmdList);
+}
+
+void FbxObject3d::PlayAnimation()
+{
+	FbxScene* fbxScene = fbxModel->GetFbxScene();
+	//0番のアニメーション取得
+	FbxAnimStack* animstack = fbxScene->GetSrcObject<FbxAnimStack>(0);
+	//アニメーションの名前取得
+	const char* animstackname = animstack->GetName();
+	//アニメーションの時間情報
+	FbxTakeInfo* takeinfo = fbxScene->GetTakeInfo(animstackname);
+	//開始時間取得
+	startTime = takeinfo->mLocalTimeSpan.GetStart();
+	//終了時間取得
+	endTime = takeinfo->mLocalTimeSpan.GetStop();
+	//開始時間に合わせる
+	currentTime = startTime;
+	//再生中状態にする
+	isPlay = true;
 }
