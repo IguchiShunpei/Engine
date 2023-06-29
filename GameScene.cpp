@@ -20,7 +20,9 @@ void GameScene::Initialize()
 	//オブジェクトにモデルを紐付ける
 	fbxObject3d_1->SetModel(fbxModel_1);
 	fbxObject3d_1->SetPosition({ 0,-5,20 });
+	fbxObject3d_1->SetRotation({ 0,90,0 });
 	fbxObject3d_1->SetScale({ 1,1,1 });
+	fbxObject3d_1->PlayAnimation();
 
 	//パーティクル
 	particle_1 = Particle::LoadParticleTexture("effect1.png");
@@ -110,7 +112,7 @@ void GameScene::Draw()
 	//3Dオブジェクト描画前処理
 	FbxObject3d::PreDraw(dxCommon->GetCommandList());
 
-	/*fbxObject3d_1->Draw(viewProjection);*/
+	fbxObject3d_1->Draw(viewProjection);
 
 	//3Dオブジェクト描画前処理
 	FbxObject3d::PostDraw();
