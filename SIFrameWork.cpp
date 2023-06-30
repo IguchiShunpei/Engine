@@ -22,7 +22,7 @@ void SIFrameWork::Initialize()
 
 	//ポストエフェクト用テクスチャ読み込み
 	postEffect_1 = new PostEffect();
-	postEffect_1->Initialize(dxCommon, WinApp::window_width, WinApp::window_height);
+	postEffect_1->Initialize(dxCommon);
 	postEffect_1->LoadTexture(1, L"Resources/texture.jpg", dxCommon);
 	postEffect_1->SetPosition({ 0,0,0 });
 }
