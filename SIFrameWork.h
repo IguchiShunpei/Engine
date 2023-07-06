@@ -39,7 +39,7 @@ private:
 	//入力のポインタ
 	Input* input = nullptr;
 	//ポストエフェクト
-	PostEffect* postEffect_1 = nullptr;
+	PostEffect* postEffect = nullptr;
 private:
 	bool endRequest = false;
 };
