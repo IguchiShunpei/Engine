@@ -21,10 +21,10 @@ void SIFrameWork::Initialize()
 	ViewProjection::StaticInitialize(dxCommon->GetDevice());
 
 	//ポストエフェクト用テクスチャ読み込み
-	postEffect_1 = new PostEffect();
-	postEffect_1->Initialize(dxCommon);
-	postEffect_1->LoadTexture(1, L"Resources/texture.jpg", dxCommon);
-	postEffect_1->SetPosition({ 0,0,0 });
+	postEffect = new PostEffect();
+	postEffect->Initialize(dxCommon);
+	postEffect->LoadTexture(1, L"Resources/texture.jpg", dxCommon);
+	postEffect->SetPosition({ 0,0,0 });
 }
 
 void SIFrameWork::Finalize()
@@ -36,7 +36,7 @@ void SIFrameWork::Finalize()
 	dxCommon->fpsFixedFinalize();
 
 	//ポストエフェクト
-	delete postEffect_1;
+	delete postEffect;
 }
 
 void SIFrameWork::Update()
@@ -67,15 +67,18 @@ void SIFrameWork::Run()
 			break;
 		}
 
+		//レンダーテクスチャへの描画
+		//描画前処理
+		postEffect->PreDrawScene(dxCommon->GetCommandList());
+		// ゲームシーン描画
+		Draw();
+		//描画後処理
+		postEffect->PostDrawScene(dxCommon->GetCommandList());
+
 		//描画前処理
 		dxCommon->PreDraw();
-
 		//ポストエフェクト描画
-		postEffect_1->Draw(dxCommon, dxCommon->GetCommandList());
-
-		//// ゲームシーン描画
-		//Draw();
-
+		postEffect->Draw(dxCommon, dxCommon->GetCommandList());
 		// 描画後処理
 		dxCommon->PostDraw();
 	}
