@@ -371,14 +371,14 @@ void Sprite::Initialize(DirectXCommon* dxCommon_, int window_width, int window_h
 		&rootSigBlob_, &errorBlob);
 	assert(SUCCEEDED(result));
 	result = dxCommon_->GetDevice()->CreateRootSignature(0, rootSigBlob_->GetBufferPointer(), rootSigBlob_->GetBufferSize(),
-		IID_PPV_ARGS(&rootSignature_));
+		IID_PPV_ARGS(&srootSignature_));
 	assert(SUCCEEDED(result));
 	//rootSigBlob_->Release();
 	//パイプラインにルートシグネチャをセット
-	pipelineDesc.pRootSignature = rootSignature_.Get();
+	pipelineDesc.pRootSignature = srootSignature_.Get();
 
 	//パイプラインステートを生成
-	result = dxCommon_->GetDevice()->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(&pipelineState_));
+	result = dxCommon_->GetDevice()->CreateGraphicsPipelineState(&pipelineDesc, IID_PPV_ARGS(&spipelineState_));
 	assert(SUCCEEDED(result));
 }
 
@@ -501,8 +501,8 @@ void Sprite::LoadTexture(uint32_t index, const wchar_t* fileName, DirectXCommon*
 void Sprite::SetTextureCommands(uint32_t index, DirectXCommon* dxCommon_)
 {
 	//パイプラインステートとルートシグネチャの設定コマンド
-	dxCommon_->GetCommandList()->SetPipelineState(pipelineState_.Get());
-	dxCommon_->GetCommandList()->SetGraphicsRootSignature(rootSignature_.Get());
+	dxCommon_->GetCommandList()->SetPipelineState(spipelineState_.Get());
+	dxCommon_->GetCommandList()->SetGraphicsRootSignature(srootSignature_.Get());
 	//プリミティブ形状の設定コマンド
 	dxCommon_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	//デスクリプタヒープのセット

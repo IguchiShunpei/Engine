@@ -23,7 +23,6 @@ void SIFrameWork::Initialize()
 	//ポストエフェクト用テクスチャ読み込み
 	postEffect = new PostEffect();
 	postEffect->Initialize(dxCommon);
-	postEffect->LoadTexture(1, L"Resources/texture.jpg", dxCommon);
 	postEffect->SetPosition({ 0,0,0 });
 }
 
