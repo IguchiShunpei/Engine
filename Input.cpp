@@ -62,6 +62,12 @@ bool Input::PushKey(BYTE keyNumber)
 bool Input::TriggerKey(BYTE keyNumber)
 {
 	// 指定キーを前フレームで押していなく、今のフレームで押していればtrueを返す
+	if (key[keyNumber] && keyPre[keyNumber] == false) {
+		return true;
+	}
+
+	return false;
+
 	if (!keyPre[keyNumber] && key[keyNumber]) {
 		return true;
 	}

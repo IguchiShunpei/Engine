@@ -1,5 +1,6 @@
 #pragma once
 #include "Sprite.h"
+#include "Input.h"
 
 using namespace Microsoft::WRL;
 
@@ -31,13 +32,15 @@ public:
     void Draw(DirectXCommon* dxCommon_,ID3D12GraphicsCommandList* cmdList);
 
     //シーン描画前処理
-    void PreDrawScene(ID3D12GraphicsCommandList*cmdList);
+    void PreDrawScene(DirectXCommon* dxCommon_,ID3D12GraphicsCommandList*cmdList);
 
     //シーン描画後処理
     void PostDrawScene(ID3D12GraphicsCommandList* cmdList);
 private:
+    //入力
+    Input* input = nullptr;
     //テクスチャバッファ
-    ComPtr<ID3D12Resource> texBuff;
+    ComPtr<ID3D12Resource> texBuff[2];
     //深度バッファ
     ComPtr<ID3D12Resource> depthBuff;
     //SRV用デスクリプタヒープ

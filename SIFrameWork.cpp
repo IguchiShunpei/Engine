@@ -68,7 +68,7 @@ void SIFrameWork::Run()
 
 		//レンダーテクスチャへの描画
 		//描画前処理
-		postEffect->PreDrawScene(dxCommon->GetCommandList());
+		postEffect->PreDrawScene(dxCommon,dxCommon->GetCommandList());
 		// ゲームシーン描画
 		Draw();
 		//描画後処理
