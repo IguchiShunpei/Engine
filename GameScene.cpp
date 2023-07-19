@@ -65,9 +65,6 @@ void GameScene::Update()
 {
 	SIFrameWork::Update();
 
-		//“ü—Í‚ÌXV
-		input->Update();
-
 		if (input->PushKey(DIK_W) || input->PushKey(DIK_A) || input->PushKey(DIK_S) || input->PushKey(DIK_D))
 		{
 			// Œ»İ‚ÌÀ•W‚ğæ“¾

@@ -230,7 +230,7 @@ void PostEffect::Initialize(DirectXCommon* dxCommon_)
 	D3D12_DESCRIPTOR_HEAP_DESC srvDescHeapDesc = {};
 	srvDescHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	srvDescHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	srvDescHeapDesc.NumDescriptors = 1;
+	srvDescHeapDesc.NumDescriptors = 2;
 	//SRV用デスクリプタヒープを生成
 	result = dxCommon_->GetDevice()->CreateDescriptorHeap(&srvDescHeapDesc, IID_PPV_ARGS(&descHeapSRV));
 	assert(SUCCEEDED(result));
@@ -242,11 +242,17 @@ void PostEffect::Initialize(DirectXCommon* dxCommon_)
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
 	srvDesc.Texture2D.MipLevels = 1;
 
-	//デスクリプタヒープにSRV作成
-	dxCommon_->GetDevice()->CreateShaderResourceView(texBuff[0].Get(),
-		&srvDesc,
-		descHeapSRV->GetCPUDescriptorHandleForHeapStart()
-	);
+	for (int i = 0; i < 2; i++)
+	{
+		//デスクリプタヒープにSRV作成
+		dxCommon_->GetDevice()->CreateShaderResourceView(texBuff[i].Get(),
+			&srvDesc,
+			CD3DX12_CPU_DESCRIPTOR_HANDLE(
+				descHeapSRV->GetCPUDescriptorHandleForHeapStart(), i,
+				dxCommon_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+			)
+		);
+	}
 
 	//RTV用デスクリプタヒープ設定
 	D3D12_DESCRIPTOR_HEAP_DESC rtvDescHeapDesc{};
@@ -447,13 +453,17 @@ void PostEffect::CreateGraphicsPipeLineState(DirectXCommon* dxCommon_)
 	gpipeline.SampleDesc.Count = 1;  //1ピクセルにつき1回サンプリング
 
 	//デスクリプタレンジの設定
-	CD3DX12_DESCRIPTOR_RANGE descRangeSRV;
-	descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);//t0レジスタ
+	CD3DX12_DESCRIPTOR_RANGE descRangeSRV0;
+	descRangeSRV0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);//t0レジスタ
+
+	CD3DX12_DESCRIPTOR_RANGE descRangeSRV1;
+	descRangeSRV1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);//t0レジスタ
 
 	//ルートパラメータの設定
-	CD3DX12_ROOT_PARAMETER rootParams[2];
+	CD3DX12_ROOT_PARAMETER rootParams[3];
 	rootParams[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
-	rootParams[1].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_ALL);
+	rootParams[1].InitAsDescriptorTable(1, &descRangeSRV0, D3D12_SHADER_VISIBILITY_ALL);
+	rootParams[2].InitAsDescriptorTable(1, &descRangeSRV1, D3D12_SHADER_VISIBILITY_ALL);
 
 	//テクスチャサンプラーの設定
 	CD3DX12_STATIC_SAMPLER_DESC samplerDesc = CD3DX12_STATIC_SAMPLER_DESC(0, D3D12_FILTER_MIN_MAG_MIP_POINT);
@@ -486,27 +496,6 @@ void PostEffect::CreateGraphicsPipeLineState(DirectXCommon* dxCommon_)
 
 void PostEffect::Draw(DirectXCommon* dxCommon_, ID3D12GraphicsCommandList* cmdList)
 {
-	//入力の更新
-	input->Update();
-
-	if (input->TriggerKey(DIK_0))
-	{
-		//デスクリプタヒープにSRV作成
-		static int tex = 0;
-		//テクスチャ番号を0と1で切り替え
-		tex = (tex + 1) % 2;
-
-		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};//設定構造体
-		srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
-		srvDesc.Texture2D.MipLevels = 1;
-		dxCommon_->GetDevice()->CreateShaderResourceView(texBuff[tex].Get(),
-			&srvDesc,
-			descHeapSRV->GetCPUDescriptorHandleForHeapStart()
-			);
-	}
-
 	//転送
 	ConstBufferDataB0* constMap0 = nullptr;
 	result = this->constBuffTransform_->Map(0, nullptr, (void**)&constMap0);
@@ -524,20 +513,32 @@ void PostEffect::Draw(DirectXCommon* dxCommon_, ID3D12GraphicsCommandList* cmdLi
 	ID3D12DescriptorHeap* ppHeaps[] = { descHeapSRV.Get() };
 	cmdList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 
-	// シェーダリソースビューをセット
-	cmdList->SetGraphicsRootDescriptorTable(1, descHeapSRV->GetGPUDescriptorHandleForHeapStart());
-
 	//頂点バッファビューの設定コマンド
 	dxCommon_->GetCommandList()->IASetVertexBuffers(0, 1, &vbView);
 	//定数バッファビュー(CBV)の設定コマンド
 	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(0, constBuffMaterial_->GetGPUVirtualAddress());
 	//定数バッファビュー(CBV)の設定コマンド
 	dxCommon_->GetCommandList()->SetGraphicsRootConstantBufferView(2, constBuffTransform_->GetGPUVirtualAddress());
+
+	// シェーダリソースビューをセット
+	cmdList->SetGraphicsRootDescriptorTable(1,
+		CD3DX12_GPU_DESCRIPTOR_HANDLE(
+			descHeapSRV->GetGPUDescriptorHandleForHeapStart(), 0,
+			dxCommon_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+		)
+	);
+
+	cmdList->SetGraphicsRootDescriptorTable(2,
+		CD3DX12_GPU_DESCRIPTOR_HANDLE(
+			descHeapSRV->GetGPUDescriptorHandleForHeapStart(), 1,
+			dxCommon_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+		)
+	);
 	//描画コマンド
 	dxCommon_->GetCommandList()->DrawInstanced(4, 1, 0, 0);  //全ての頂点を使って描画
 }
 
-void PostEffect::PreDrawScene(DirectXCommon* dxCommon_,ID3D12GraphicsCommandList* cmdList)
+void PostEffect::PreDrawScene(DirectXCommon* dxCommon_, ID3D12GraphicsCommandList* cmdList)
 {
 	for (int i = 0; i < 2; i++)
 	{
@@ -568,8 +569,8 @@ void PostEffect::PreDrawScene(DirectXCommon* dxCommon_,ID3D12GraphicsCommandList
 
 	for (int i = 0; i < 2; i++)
 	{
-	viewPorts[i] = CD3DX12_VIEWPORT(0.0f, 0.0f, WinApp::window_width, WinApp::window_height);
-	rects[i] = CD3DX12_RECT(0, 0, WinApp::window_width, WinApp::window_height);
+		viewPorts[i] = CD3DX12_VIEWPORT(0.0f, 0.0f, WinApp::window_width, WinApp::window_height);
+		rects[i] = CD3DX12_RECT(0, 0, WinApp::window_width, WinApp::window_height);
 	}
 
 	//ビューポートの設定
@@ -579,8 +580,8 @@ void PostEffect::PreDrawScene(DirectXCommon* dxCommon_,ID3D12GraphicsCommandList
 
 	for (int i = 0; i < 2; i++)
 	{
-	//全画面クリア
-	cmdList->ClearRenderTargetView(rtvHs[i], clearColor, 0, nullptr);
+		//全画面クリア
+		cmdList->ClearRenderTargetView(rtvHs[i], clearColor, 0, nullptr);
 	}
 	//深度バッファのクリア
 	cmdList->ClearDepthStencilView(dsvH, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
@@ -590,10 +591,10 @@ void PostEffect::PostDrawScene(ID3D12GraphicsCommandList* cmdList)
 {
 	for (int i = 0; i < 2; i++)
 	{
-	CD3DX12_RESOURCE_BARRIER resBarrier = CD3DX12_RESOURCE_BARRIER::Transition(texBuff[i].Get(),
-		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
+		CD3DX12_RESOURCE_BARRIER resBarrier = CD3DX12_RESOURCE_BARRIER::Transition(texBuff[i].Get(),
+			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
-	//リソースバリアを変更(描画可能→シェーダーリソース)
-	cmdList->ResourceBarrier(1, &resBarrier);
+		//リソースバリアを変更(描画可能→シェーダーリソース)
+		cmdList->ResourceBarrier(1, &resBarrier);
 	}
 }
