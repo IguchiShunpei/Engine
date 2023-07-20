@@ -19,9 +19,9 @@ void GameScene::Initialize()
 	fbxObject3d_1 = FbxObject3d::Create();
 	//オブジェクトにモデルを紐付ける
 	fbxObject3d_1->SetModel(fbxModel_1);
-	fbxObject3d_1->SetPosition({ 0,-5,20 });
+	fbxObject3d_1->SetPosition({ 0,-8,20 });
 	fbxObject3d_1->SetRotation({ 0,90,0 });
-	fbxObject3d_1->SetScale({ 2,2,2 });
+	fbxObject3d_1->SetScale({ 4,4,4 });
 	fbxObject3d_1->PlayAnimation();
 
 	//パーティクル

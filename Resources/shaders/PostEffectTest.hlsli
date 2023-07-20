@@ -1,7 +1,8 @@
 //マテリアル
 cbuffer ConstBufferDataMaterial : register(b0)
 {
-
+	float4 color; // 色
+	matrix mat;   // 行列
 }
 
 //頂点シェーダーの出力構造体

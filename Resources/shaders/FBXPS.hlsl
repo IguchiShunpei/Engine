@@ -20,6 +20,6 @@ PSOutput main(VSOutput input)
 	float4 shadecolor = float4(brightness,brightness,brightness,1.0f);
 	//陰影とテクスチャの色を合成
 	output.target0 = shadecolor * texcolor;
-	output.target1 = float4(1 - (shadecolor * texcolor).rgb, 1);
+	output.target1 = float4((shadecolor * texcolor).rgb, 1);
 	return output;
 }

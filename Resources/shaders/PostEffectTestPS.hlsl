@@ -13,14 +13,44 @@ float Gaussian(float2 drawUV, float2 pickUV, float sigma)
 
 float4 main(VSOutput input) : SV_TARGET
 {
-	float4 colorTex0 = tex0.Sample(smp, input.uv);
-	float4 colorTex1 = tex1.Sample(smp, input.uv);
+    //色反転
+   float4 col0 = 1 - tex0.Sample(smp, input.uv);
 
-	float4 color = colorTex0;
-	if (fmod(input.uv.y, 0.1f) < 0.05f)
-	{
-		color = colorTex1;
-	}
+   //平均ぼかし
+   float4 col1 = tex1.Sample(smp, input.uv) * color;
+   float U = 5.0f / 1280.0f;
+   float V = 5.0f / 720.0f;
 
-	return float4(color.rgb,1);
+   // 左上ピクセルの色をサンプリングし、足す
+   col1 += tex1.Sample(smp, input.uv + float2(-U, -V));
+   // 左上ピクセルの色をサンプリングし、足す
+   col1 += tex1.Sample(smp, input.uv + float2(0.0f, -V));
+   // 左上ピクセルの色をサンプリングし、足す
+   col1 += tex1.Sample(smp, input.uv + float2(U, -V));
+   // 左上ピクセルの色をサンプリングし、足す
+   col1 += tex1.Sample(smp, input.uv + float2(-U, 0.0f));
+   // 左上ピクセルの色をサンプリングし、足す
+   col1 += tex1.Sample(smp, input.uv + float2(0, 0));
+   // 左上ピクセルの色をサンプリングし、足す
+   col1 += tex1.Sample(smp, input.uv + float2(U, 0.0f));
+   // 左上ピクセルの色をサンプリングし、足す
+   col1 += tex1.Sample(smp, input.uv + float2(-U, V));
+   // 左上ピクセルの色をサンプリングし、足す
+   col1 += tex1.Sample(smp, input.uv + float2(0.0f, V));
+   // 左上ピクセルの色をサンプリングし、足す
+   col1 += tex1.Sample(smp, input.uv + float2(U, V));
+
+   // 合計色を9で割る
+   col1 /= 9.0f;
+
+   //縞々模様を作る
+   float4 colortex0 = col0;
+   float4 colortex1 = col1;
+
+   float4 color = colortex0;
+   if (fmod(input.uv.y, 0.1f) < 0.05f) {
+       color = colortex1;
+   }
+
+   return float4(color.rgb, 1);
 }
